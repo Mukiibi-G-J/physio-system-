@@ -1,0 +1,103 @@
+{% extends 'base.html' %} {% load widget_tweaks %} 
+{% block auth %} 
+{% include '_partials/navbar.html' %} 
+{% include 'dashboard.html' %} 
+{% endblock auth %} 
+{% load static %}
+
+
+
+
+{% block content %}
+<div class="main-content">
+    <section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <h4 class="page-title m-b-0">Export Tables</h4>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="index.html">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item">Export Tables</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Export Table</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
+                      <thead>
+                        <tr>
+                          <th>PIN NO</th>
+                          <th>Full Name</th>
+                          <th>Date</th>
+                          <th>Doctor</th>
+                          <th>Diagnosis</th>
+                          <th>Therapy</th>
+                          <th>Ward</th>
+                        <th>Physiotherapist</th>
+                        <th>Receipt No</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                       {% for p in physioSessions %}
+                       
+                       
+                       
+                       <tr>
+                         <td>{{ p.patient.pin_no }}</td>
+                        <td>{{ p.patient.get_full_name}}</td>
+                        <td>{{ p.date_of_visit}}</td>
+                        <td>{{ p.doctor }}</td>
+                        <td>{{ p.diagnosis }}</td>
+                        <td>{{ p.therapy }}</td>
+                        <td>{{ p.ward }}</td>
+                        <td>{{ p.therapist }}</td>
+
+
+                        <td>{{ p.receipt_no }}</td>
+
+                      </tr>
+                       
+                       
+                       {% endfor %}
+                       
+
+
+
+
+                    
+                       
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<!-- Page Specific JS File -->
+<script src="{% static 'assets/bundles/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/bundles/datatables/export-tables/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/bundles/datatables/export-tables/buttons.flash.min.js' %}"></script>
+<script src="{% static 'assets/bundles/datatables/export-tables/jszip.min.js' %}"></script>
+<script src="{% static 'assets/bundles/datatables/export-tables/pdfmake.min.js' %}"></script>
+<script src="{% static 'assets/bundles/datatables/export-tables/vfs_fonts.js' %}"></script>
+<script src="{% static 'assets/bundles/datatables/export-tables/buttons.print.min.js' %}"></script>
+<script src="{% static 'assets/js/page/datatables.js' %}"></script>
+
+{% endblock scripts %}

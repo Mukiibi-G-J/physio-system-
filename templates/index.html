@@ -1,0 +1,118 @@
+{% extends 'base.html' %} {% load widget_tweaks %} 
+{% block auth %} 
+{% include '_partials/navbar.html' %} 
+{% include 'dashboard.html' %} 
+{% endblock auth %}
+ {% block content %}
+
+
+
+<!-- Main Content -->
+<div class="loader"></div>
+
+<div class="main-content">
+  <section class="section">
+    <div class="section-body">
+      {% include '_partials/messages.html' %}
+      <div class="w-100 text-center" id="KAL">
+        <form id="search-form" autocomplete="off">
+          {% csrf_token %}
+          <input
+            id="search_input"
+            type="text"
+            name="search"
+            placeholder="Search"
+            class="p-3 search"
+          />
+        </form>
+        <div class="results-card center d-none" id="results-box">test</div>
+      </div>
+      
+      <form method="POST" action='{%  url 'home' %}'>
+        {% csrf_token %}
+
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <h4>Book a Device</h4>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Email</span>
+                  </div>
+
+                  {% render_field  form.email name="email"  type="email" class="form-control" value=data.email %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Name</span>
+                  </div>
+
+                  {% render_field  form.name   name="name" type="text" class="form-control" value=data.name %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Devices</span>
+                  </div>
+                  {% render_field  form.devices   name="devices" class="form-control" value=data.devices %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Contact</span>
+                  </div>
+                  {% render_field form.contact type="tel" name="phone" value=data.contact class="form-control"   hx-post="/check_phone_2/" hx-trigger="keyup"  hx-target="#phone-error" hx-swapp="outerhtml"  %}
+              
+                </div>
+                <div id='phone-error'>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <h4>Book a Device</h4>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label>Start Time</label>
+                {% render_field form.time type="time" name="start_time" value=data.time class="form-control" hx-post="/check_time/" hx-trigger="change"  hx-target="#start-time" hx-swapp="outerhtml"  %}
+              </div>
+              <div id='start-time'>
+              </div>
+              <div class="form-group">
+                <label>End time</label>
+                {% render_field form.end_time type="time" name="end_time" value=data.end_time class="form-control"  hx-post="/check_time/" hx-trigger="change"  hx-target="#end-time" hx-swapp="outerhtml" %}
+              </div>
+              <div id='end-time'>
+              </div>
+              <div class="form-group">
+                <label>Date </label>
+                {% render_field form.date type="date" class="form-control" value=data.date hx-post="/current_date/" hx-trigger="change"  hx-target="#date-error" hx-swapp="outerhtml" %}
+              </div>
+              <div id='date-error'>
+              </div>
+              <div class="card-footer text-right">
+                <button class="btn btn-primary mr-1" type="submit">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      </div>
+      </form.
+    </div>
+  </section>
+</div>
+
+{% endblock %}

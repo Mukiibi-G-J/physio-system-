@@ -1,0 +1,137 @@
+// console.log('heelooo');
+
+// const url = window.location.href;
+// const searchForm = document.getElementById('KAL');
+// const searchInput = document.getElementById('search_input1');
+// const resultsBox = document.getElementById('results-box');
+
+
+// const sendSearchData = async(game) => {
+//     $.ajax({
+//         type: 'POST',
+//         url: 'search-patient/',
+//         data: {
+//             game: game,
+//         },
+//         success: (response) => {
+//             console.log(response.data);
+//             if (Array.isArray(response.data)) {
+//                 resultsBox.innerHTML = '';
+//                 response.data.forEach((game) => {
+//                     resultsBox.innerHTML += `<a href="" class="item">
+//                 <div class="row mt-2 mb-2">
+
+//                   <div class="col-10">
+//                       <h5 class="game-name">${game.name}</h5>
+
+//                   </div>
+
+//                 </div>
+//                 </a>`;
+//                 });
+//             } else {
+//                 if (searchInput.value.length > 0) {
+//                     resultsBox.innerHTML = `<b>${response.data}</b>`;
+//                 } else {
+//                     resultsBox.classList.add('none');
+//                 }
+//             }
+//         },
+//         error: (error) => {
+//             console.log(error);
+//         },
+//     });
+// };
+
+// searchInput.addEventListener('keyup', (e) => {
+//     console.log(e.target.value);
+//     if (resultsBox.classList.contains('d-none')) {
+//         resultsBox.classList.remove('d-none');
+//     }
+//     sendSearchData(e.target.value);
+// });
+
+
+console.log('heelooo');
+
+const url = window.location.href;
+const searchForm = document.getElementById('KAL');
+const searchInput = document.getElementById('search_input');
+const resultsBox = document.getElementById('results-box');
+const crf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+
+// const sendSearchData = async(game) => {
+//     $.ajax({
+//         type: 'POST',
+//         url: 'search/',
+//         data: {
+//             csrfmiddlewaretoken: crf,
+//             game: game,
+//         },
+//         success: (response) => {
+//             console.log(response.data);
+//             if (Array.isArray(response.data)) {
+//                 resultsBox.innerHTML = '';
+//                 response.data.forEach((game) => {
+//                     resultsBox.innerHTML += `<a href="" class="item">
+//           <div class="row mt-2 mb-2">
+//             <div class="col-2 p-3">
+//                 <img src="${game.image}" class="game-img" >
+//             </div>
+//             <div class="col-10">
+//                 <h5 class="game-name">${game.name}</h5>
+
+//             </div>
+
+//           </div>
+//           </a>`;
+//                 });
+//             } else {
+//                 if (searchInput.value.length > 0) {
+//                     resultsBox.innerHTML = `<b>${response.data}</b>`;
+//                 } else {
+//                     resultsBox.classList.add('not-visible');
+//                 }
+//             }
+//         },
+//         error: (error) => {
+//             console.log(error);
+//         },
+//     });
+// };
+
+// searchInput.addEventListener('keyup', (e) => {
+//     //   console.log(e.target.value);
+//     if (resultsBox.classList.contains('not-visible')) {
+//         resultsBox.classList.remove('not-visible');
+//     }
+
+//     sendSearchData(e.target.value);
+// });
+
+// console.log(crf);
+// console.log(url);
+// searchInput.addEventListener("keyup", (e) => {
+//     //   console.log(e.target.value);
+//     if (resultsBox1.classList.contains("d-none")) {
+//         resultsBox1.classList.remove("d-none");
+//     }
+
+//     sendSearchData(e.target.value);
+// });
+const patientSearch = async(e) => {
+
+    e.preventDefault()
+        // patient_search.addEventListener("click", (e) => {
+    console.log("key is up ")
+    if (resultsBox1.classList.contains("d-none")) {
+        resultsBox1.classList.remove("d-none");
+    }
+
+    const p = searchInput.value;
+    console.log(p);
+    sendSearchData(p);
+    // })
+
+}

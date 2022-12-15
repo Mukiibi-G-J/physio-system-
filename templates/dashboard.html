@@ -1,0 +1,77 @@
+{% load static %}
+
+
+<div class="main-sidebar sidebar-style-2">
+    <aside id="sidebar-wrapper">
+      <div class="sidebar-brand">
+        <a href="{% url 'home' %}">  <span
+            class="logo-name">Physiotherapy System</span>
+        </a>
+      </div>
+      <div class="sidebar-user">
+        <div class="sidebar-user-picture">
+            <img src="{% static 'images/logo.png' %}" src="assets/img/user.png">
+        </div>
+        <div class="sidebar-user-details">
+          <div class="user-name">Hello  {{request.user.username}} 😎 </div>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="menu-header">Main</li>
+        
+        <li class="dropdown active">
+          <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="monitor"></i><span>Home</span></a>
+          <ul class="dropdown-menu">
+            <li><a class="nav-link" href="{% url 'dashboard' %}">DashBoard</a></li>
+            <li><a class="nav-link" href="{% url 'add-patient' %}">Therapy Report</a></li>
+            <li><a class="nav-link" href="{% url 'physio-session' %}">Physio session Report</a></li>
+            <li><a class="nav-link" href="{% url 'ward-report' %}">Ward Reports</a></li>
+          </ul>
+        </li>
+        {% if   request.user.is_superuser %}
+    
+        <li class="dropdown ">
+          <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="grid"></i><span>Patients</span></a>
+          <ul class="dropdown-menu">
+            <li><a class="nav-link" href="{% url 'patient-table' %}">Patient Tables</a></li>
+            <li><a class="nav-link" href="{% url 'add-patient' %}">New Patient</a></li>
+            <li><a class="nav-link" href="{% url 'physio-session' %}">Physio session</a></li>
+            <li><a class="nav-link" href="{% url 'physio-session-table' %}">Physio Session Table</a></li>
+            <li><a class="nav-link" href="editable-table.html">Editable Table</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="copy"></i><span>Doctors</span></a>
+          <ul class="dropdown-menu">
+            <li><a class="nav-link" href="{% url 'add-doctor' %}">Add Doctor</a></li>
+            <li><a class="nav-link" href="{% url 'doctor-table' %}">Doctors List</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="copy"></i><span>Ward</span></a>
+          <ul class="dropdown-menu">
+            <li><a class="nav-link" href="{% url 'add-ward' %}">Add Ward</a></li>
+            <li><a class="nav-link" href="{% url 'ward-table' %}">Ward List</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="copy"></i><span>Diagnosis</span></a>
+          <ul class="dropdown-menu">
+            <li><a class="nav-link" href="{% url 'add-diagnosis' %}">Add Diagnosis</a></li>
+            <li><a class="nav-link" href="{% url 'diagnosis-table' %}">Diagnosis List</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="copy"></i><span>Therapy</span></a>
+          <ul class="dropdown-menu">
+            <li><a class="nav-link" href="{% url 'add-therapy' %}">Add Therapy</a></li>
+            <li><a class="nav-link" href="{% url 'therapy-table' %}">Therapy List</a></li>
+          </ul>
+        </li>
+     
+    
+        {% endif %}
+        
+      </ul>
+    </aside>
+  </div>

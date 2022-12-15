@@ -1,0 +1,34 @@
+{% if results %}
+
+
+     <div class="card">
+      <div class="card-body">
+     {% for result in results %}
+
+        <div class="list-group">
+
+          {% comment %} <a href="#" class="list-group-item list-group-item-action active">
+            Cras justo odio
+          </a> {% endcomment %}
+          <a href="#" class="list-group-item list-group-item-action">{{ result }}</a>
+         
+      </div>
+   {% endfor %}
+
+    </div>
+ {% elif  results == None %}
+    <div class="card d-none">
+      <div class="card-body">
+        <div class="list-group">
+      <p>No results found</p>
+      </div>
+    </div>
+  {% else %}
+    <div class="card">
+      <div class="card-body">
+        <div class="list-group">
+      <p>Enter a search term</p>
+      </div>
+    </div>
+
+  {% endif %}

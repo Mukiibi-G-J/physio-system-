@@ -1,0 +1,125 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Intern project</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
+    />
+ <!-- General CSS Files -->
+
+
+  <link rel="stylesheet" href="{% static 'assets/css/app.min.css' %}">
+ <!-- Template CSS -->
+ <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+ <link rel="stylesheet" href="{% static 'assets/css/components.css' %}">
+ <!-- Custom style CSS -->
+ <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
+ <link rel='shortcut icon' type='image/x-icon' href="{% static 'assets/img/favicon.ico' %}"/>
+ <link rel="stylesheet" href="{% static 'assets/bundles/izitoast/css/iziToast.min.css' %}">
+ <script
+ src="https://code.jquery.com/jquery-3.6.1.js"
+ integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+ crossorigin="anonymous"
+></script>
+
+<!-- ✅ load jQuery ✅ -->
+
+
+  <script src="{% static 'js/htmx.min.js' %}"></script>
+  <script src={% static 'js/index.js' %}></script>
+
+
+  </head>
+
+
+  <body>
+    
+    
+
+   {% block auth %}{% endblock auth %}
+  
+    
+    <div id="app">
+      <div class="main-wrapper main-wrapper-1">
+        <div class="navbar-bg"></div>
+        {% block content %} 
+        {% endblock %}
+    
+      </div>
+    </div> 
+
+    {% block scripts %}{% endblock scripts %}
+    {% block chartjs %} {% endblock %}
+    <script type=text/javascript>
+      function my() {
+        iziToast.warning({
+            title: 'Hello, world!',
+            message: 'This awesome plugin is made by iziToast',
+            position: 'topRight'
+        });
+      }
+    </script>
+
+    <script type=text/javascript>
+     console.log("it works")
+      iziToast.warning({
+          title: 'Hello, world!',
+          message: 'This awesome plugin is made by iziToast',
+          position: 'topRight'
+      });
+  </script>
+
+   <!-- General JS Scripts -->
+  <script src="{% static 'assets/js/app.min.js' %}"></script>
+  <!-- JS Libraies -->
+     <!-- JS Libraies -->
+     <script src="{% static 'assets/bundles/izitoast/js/iziToast.min.js' %}"></script>
+
+     <!-- Page Specific JS File -->
+  <script src="{% static 'assets/bundles/apexcharts/apexcharts.min.js' %}"></script>
+  <script src="{% static 'assets/bundles/amcharts4/core.js' %}"></script>
+  <script src="{% static 'assets/bundles/amcharts4/charts.js' %}"></script>
+  <script src="{% static 'assets/bundles/amcharts4/animated.js' %}"></script>
+  <script src="{% static 'assets/bundles/jquery.sparkline.min.js' %}"></script>
+  <!-- Page Specific JS File -->
+  <script src="{% static 'assets/js/page/index.js' %}"></script>
+  <!-- Template JS File -->
+  <script src="{% static 'assets/js/scripts.js' %}"></script>
+  <!-- Custom JS File -->
+  <script src="{% static 'assets/js/custom.js' %}"></script>
+  <script>
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+      utilsScript:
+        "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+  </script>
+   
+    {% for message in messages %}
+        {% if message.tags == 'success'%}
+            <script type=text/javascript>   
+              iziToast.{{message.tags}}({
+              title: 'success',
+              message:'{{ message }}',
+              position: 'topRight'
+          })</script>
+        {% elif message.tags == 'info' %}
+            <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+        {% elif message.tags == 'warning' %}
+            <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+        {% elif message.tags == 'error' %}
+            <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+        {% endif %}
+    {% endfor %}
+    <script src="{% static 'js/search.js' %}"></script>
+    <script src="{% static 'js/new_search.js' %}"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Device Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Cables</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ device.name }}</td>
+                <td>{{ device.type }}</td>
+                <td>
+
+                    {% for  d in device.cables.all %}
+                     {{  d }}  
+                    
+                    {% endfor %}
+                </td>
+            {% if device.status == 1 %} 
+                    <td>
+                        <button type="button" class="btn btn-success">Available</button>
+                    </td>
+            {% elif device.status == 0 %}
+                    <td>
+                        <button type="button" class="btn btn-warning">Not Available</button>
+                    </td>
+            {% else %}
+                    <td>
+                        <button type="button" class="btn btn-danger">Damaged</button>
+                    </td>
+
+            {% endif %}     
+            </tr>
+                {% endfor %} 
+            </tbody>
+        </table>  
+
+</div>
+</div>
+
+
+
+{% endblock content %}
+

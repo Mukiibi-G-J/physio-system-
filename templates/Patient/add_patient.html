@@ -1,0 +1,83 @@
+{% extends 'base.html' %} {% load widget_tweaks %} 
+{% block auth %} 
+{% include '_partials/navbar.html' %} 
+{% include 'dashboard.html' %} 
+{% endblock auth %} 
+
+
+{% block content %}
+<div class="main-content">
+    <div class="section-body">
+
+        <div class="card">
+            <div class="card-header">
+              <h4>Patient Registration</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+
+                    {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="inputZip">Pin No</label>
+                        {% render_field form.pin_no  class="form-control" value=data.cables %}
+                      
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label>Surname</label>
+                        {% render_field form.surname  type="text" class="form-control" value=data.type %}
+                    
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label>First Name</label>
+                        {% render_field form.first_name type="text" class="form-control" value=data.cables %}
+                    </div>
+               </div>
+               <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Address</label>
+                    {% render_field form.address  type="text" class="form-control" value=data.type %}
+                
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Phone</label>
+                    {% render_field form.phone_number type="text" class="form-control" value=data.cables %}
+                </div>
+           </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputCity">Date of Birth</label>
+               
+                  {% render_field form.date_of_birth type="date" class="form-control" value=data.cables %}
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputZip">Title</label>
+                    {% render_field form.title  class="form-control" value=data.cables %}
+                  
+                </div>
+                <div class="form-group col-md-2">
+                    <label>sex</label>
+                    {% render_field form.sex  class="form-control" value=data.cables %}
+                 
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputZip">Patient Type</label>
+                    {% render_field form.patient_type  class="form-control" value=data.cables %}
+                  
+                </div>
+              </div>
+            
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+         </div>
+
+        
+   </div>
+</div>
+
+
+{% endblock content %}
+

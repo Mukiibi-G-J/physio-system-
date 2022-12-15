@@ -1,0 +1,202 @@
+<nav class="navbar navbar-expand-lg appbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <h1> 
+        <strong>
+          Consent Form
+        </strong>
+        </h1>
+   </a>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        {% if user.is_superuser %}
+       
+      
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">
+          <button type="button" class="btn btn-success">Home</button>
+
+          </a>
+        </li>
+        <li>
+          <a class="nav-link" href="{% url 'add-device' %}">
+          <button type="button" class="btn btn-success">Add devices</button>
+
+          </a>
+        </li>
+        <li>
+          <a class="nav-link" href="{% url 'device-list' %}">
+          <button type="button" class="btn btn-success">Devices List</button>
+
+          </a>
+        </li>
+        {% endif %}
+    
+      
+      </ul>
+      {%   if request.user.is_authenticated %}
+      <h2> 
+        <strong>
+         Hello {{request.user.username}} 😎
+        </strong>
+        </h2>
+                
+     
+          <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">
+          <button type="button" class="btn btn-success">LogOut</button>
+
+          </a>
+          {% else %}
+          <a class="nav-link active" aria-current="page" href="{% url 'login' %}">
+          <button type="button" class="btn btn-success">LogIn</button>
+        </a>
+          {% endif %}
+          {% if user.is_superuser %}
+          <a class="nav-link active" aria-current="page" href="{% url 'register' %}">
+            <button type="button" class="btn btn-success">Register New User</button>
+  
+            </a>
+
+          {% endif %}
+    </div>
+  </div>
+</nav>
+
+
+
+<!-- General JS Scripts -->
+  <script src="{% static 'assets/js/app.min.js' %}"></script>
+  <!-- JS Libraies -->
+  <script src="{% static 'assets/bundles/apexcharts/apexcharts.min.js' %}"></script>
+  <script src="{% static 'assets/bundles/amcharts4/core.js' %}"></script>
+  <script src="{% static 'assets/bundles/amcharts4/charts.js' %}"></script>
+  <script src="{% static 'assets/bundles/amcharts4/animated.js' %}"></script>
+  <script src="{% static 'assets/bundles/jquery.sparkline.min.js' %}"></script>
+  <!-- Page Specific JS File -->
+  <script src="{% static 'assets/js/page/index.js' %}"></script>
+  <!-- Template JS File -->
+  <script src="{% static 'assets/js/scripts.js' %}"></script>
+  <!-- Custom JS File -->
+  <script src="{% static 'assets/js/custom.js' %}"></script>
+  <script>
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+      utilsScript:
+        "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+  </script>
+
+
+    <section class="section">
+      <div class="container mt-5">
+        <div class="row">
+          <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h4>Login</h4>
+              </div>
+              <div class="card-body">
+                <form method="POST" action="#" class="needs-validation" novalidate="">
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+                    <div class="invalid-feedback">
+                      Please fill in your email
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="d-block">
+                      <label for="password" class="control-label">Password</label>
+                      <div class="float-right">
+                        <a href="auth-forgot-password.html" class="text-small">
+                          Forgot Password?
+                        </a>
+                      </div>
+                    </div>
+                    <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
+                    <div class="invalid-feedback">
+                      please fill in your password
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" name="remember" class="custom-control-input" tabindex="3" id="remember-me">
+                      <label class="custom-control-label" for="remember-me">Remember Me</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                      Login
+                    </button>
+                  </div>
+                </form>
+                <div class="text-center mt-4 mb-3">
+                  <div class="text-job text-muted">Login With Social</div>
+                </div>
+                <div class="row sm-gutters">
+                  <div class="col-6">
+                    <a class="btn btn-block btn-social btn-facebook">
+                      <span class="fab fa-facebook"></span> Facebook
+                    </a>
+                  </div>
+                  <div class="col-6">
+                    <a class="btn btn-block btn-social btn-twitter">
+                      <span class="fab fa-twitter"></span> Twitter
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5 text-muted text-center">
+              Don't have an account? <a href="auth-register.html">Create One</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <div class="container h-100">
+    <div class="d-flex justify-content-center h-100">
+        <div class="user_card">
+            <div class="d-flex justify-content-center">
+                <div class="brand_logo_container">
+                    <img src="{% static 'images/logo.png' %}" class="brand_logo" alt="Logo">
+                </div>
+            </div>
+            <div class="d-flex justify-content-center form_container">
+                <form method='POST' action={% url 'login' %}>
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                      
+                        {% render_field form.username  type="text" name="" class="form-control input_user" value="" placeholder="Department"  %}
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        </div>
+                        {% render_field form.password  type="password" name="" class="form-control input_pass" value="" placeholder="password" %}
+                      
+                    </div>
+                   
+                <div class="d-flex justify-content-center mt-3 login_container">
+                 <button type="submit" name="button" class="btn login_btn">Login</button>
+               </div>
+                </form>
+            </div>
+    
+            {% comment %} <div class="mt-4">
+                <div class="d-flex justify-content-center links">
+                    Don't have an account? <a href="#" class="ml-2">Sign Up</a>
+                </div>
+                <div class="d-flex justify-content-center links">
+                    <a href="#">Forgot your password?</a>
+                </div>
+            </div> {% endcomment %}
+        </div>
+    </div>
+</div>

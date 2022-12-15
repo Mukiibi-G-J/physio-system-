@@ -1,0 +1,39 @@
+{% extends 'base.html' %} {% load widget_tweaks %} 
+{% block auth %} 
+{% include '_partials/navbar.html' %} 
+{% include 'dashboard.html' %} 
+{% endblock auth %} 
+
+
+{% block content %}
+<div class="main-content">
+    <div class="section-body">
+        {% include '_partials/messages.html' %}
+
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="card">
+
+                    <div class="card-body">
+
+                    <form method="POST" action="{% url 'add-cables' %}">
+
+                        {% csrf_token %}
+                        <div class="form-group">
+                        <label >name</label>
+                        <input type="text" class="form-control" name="name"  required>
+                        </div>
+                      
+                        
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>  
+   </div>
+</div>
+
+
+{% endblock content %}
+

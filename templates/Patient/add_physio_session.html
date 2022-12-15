@@ -1,0 +1,130 @@
+{% extends 'base.html' %} {% load widget_tweaks %} {% block auth %} 
+{% include '_partials/navbar.html' %} {% include 'dashboard.html' %} {% endblock auth %} 
+ {% block content %}
+ {% load static %}
+<div class="main-content">
+  <div class="section-body">  
+  <div class="form-group col-md-4" id="KAL">
+    <label>Search BY Name </label>
+    <form id="search-form" method="POST" action="{% url 'search' %}" autocomplete="off">
+            {% csrf_token %}
+       {% comment %} hx-post='{% url 'search-patient' %}' hx-target="#results"
+      hx-trigger="keyup changed delay:500ms"  {% endcomment %}
+      <div>
+      <input
+        id="search_input"
+        type="text"
+        name="game"
+        placeholder="Search"
+        class="p-3 form-control search"
+      />
+      </div>
+      {% comment %} <input id="my_search_1" name="search"
+      placeholder="Search Patient......" type="text"
+      class="form-control" hx-post='{% url 'search_patient' %}'
+      hx-target="#results" hx-trigger="keyup changed delay:500ms"
+      > {% endcomment %}
+    </form>
+  
+  </div>
+
+    <form method="POST" action={% url 'physio-session' %}>
+      <div class="card">
+        <div class="card-header">
+          <h4>Pysio Session</h4>
+        </div>
+        
+        
+          <div class="card-body">
+            {% csrf_token %}
+
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                {% comment %}
+                <div class="form-row">
+                  <div class="form-group col-md-4">
+                    <label>Search ByN </label>
+                    <input name="search_text" type="text" class="form-control"
+                    hx-post='{% url 'search-patient' %}' hx-target="#results"
+                    hx-trigger="keyup changed delay:500ms" />
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label>Patient</label>
+                    <input name="search_text" type="text" class="form-control"
+                    hx-post='{% url 'search-patient' %}' hx-target="#results"
+                    hx-trigger="keyup changed delay:500ms" />
+                  </div>
+                </div>
+                {% endcomment %}
+              
+                <div class="form-row">
+                  <div class="card d-none" id="results-box">
+                    <div class="card-body"></div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group col-md-2">
+                    <label for="inputZip">Date</label>
+                    {% render_field form.date_of_visit type='date'   class="form-control" value=data.cables %}
+                  </div>
+                 
+                 
+                  <div class "form-group col-md-2" id="pin_no">
+               
+                  </div>
+                 
+                  <div class="form-group col-md-2" id="patient_name">
+                   
+                  </div>
+                  <div class="form-group col-md-2" id="patient_type">
+                    
+                  </div>
+                  <div class "form-group col-md-2" id="patient_id">
+               
+                  </div>
+                
+                  <div class="form-group col-md-2" id="edit_button">
+                  </div> 
+                  
+                </div>
+              
+                <div class="form-row">
+                  <div class="form-group col-md-2">
+                    <label>Diagnosis</label>
+                    {% render_field form.diagnosis type="text" class="form-control" value=data.type %}
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label>Therapy</label>
+                    {% render_field form.therapy type="text" class="form-control" value=data.cables %}
+                  </div>
+                 
+                  <div class="form-group col-md-2">
+                      <label>Doctor</label>
+                      {% render_field form.doctor type="text" class="form-control" value=data.cables %}
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="inputZip">Wardr</label>
+                    {% render_field form.ward   class="form-control"  %}
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="inputZip">Receipt Number</label>
+                    {% render_field form.receipt_no class="form-control" value=data.cables %}
+                  </div>
+                </div>
+              
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {% endblock content %}
+    </form>
+  </div>
+</div>
+
+
