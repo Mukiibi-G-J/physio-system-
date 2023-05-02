@@ -135,3 +135,203 @@ class Patients(models.Model):
         db_table = 'Patients'
 
 
+class Items(models.Model):
+    visitno = models.OneToOneField('Visits', models.DO_NOTHING, db_column='VisitNo', primary_key=True)  # Field name made lowercase.
+    itemcode = models.CharField(db_column='ItemCode', max_length=20)  # Field name made lowercase.
+    # itemcategoryid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='ItemCategoryID')  # Field name made lowercase.
+    quantity = models.IntegerField(db_column='Quantity', blank=True, null=True)  # Field name made lowercase.
+    unitcost = models.DecimalField(db_column='UnitCost', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    unitprice = models.DecimalField(db_column='UnitPrice', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    itemdetails = models.CharField(db_column='ItemDetails', max_length=800, blank=True, null=True)  # Field name made lowercase.
+    lastupdate = models.DateTimeField(db_column='LastUpdate', blank=True, null=True)  # Field name made lowercase.
+    # itemstatusid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='ItemStatusID', blank=True, null=True)  # Field name made lowercase.
+    # paystatusid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='PayStatusID', blank=True, null=True)  # Field name made lowercase.
+    # loginid = models.ForeignKey('Logins', models.DO_NOTHING, db_column='LoginID', blank=True, null=True)  # Field name made lowercase.
+    clientmachine = models.CharField(db_column='ClientMachine', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    recorddatetime = models.DateTimeField(db_column='RecordDateTime', blank=True, null=True)  # Field name made lowercase.
+    creatorclientmachine = models.CharField(db_column='CreatorClientMachine', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    # creatorloginid = models.ForeignKey('Logins', models.DO_NOTHING, db_column='CreatorLoginID', blank=True, null=True)  # Field name made lowercase.
+    itemname = models.CharField(db_column='ItemName', max_length=800, blank=True, null=True)  # Field name made lowercase.
+    unitmeasure = models.CharField(db_column='UnitMeasure', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    vatvalue = models.DecimalField(db_column='VATValue', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    invoiceno = models.CharField(db_column='InvoiceNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    originalquantity = models.IntegerField(db_column='OriginalQuantity', blank=True, null=True)  # Field name made lowercase.
+    originalprice = models.DecimalField(db_column='OriginalPrice', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    conclusiondate = models.DateTimeField(db_column='ConclusionDate', blank=True, null=True)  # Field name made lowercase.
+    paydate = models.DateTimeField(db_column='PayDate', blank=True, null=True)  # Field name made lowercase.
+    adjustmentcount = models.IntegerField(db_column='AdjustmentCount', blank=True, null=True)  # Field name made lowercase.
+    discount = models.DecimalField(db_column='Discount', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    # referenceno = models.ForeignKey('Paymentrequests', models.DO_NOTHING, db_column='ReferenceNo', blank=True, null=True)  # Field name made lowercase.
+
+    
+    def __str__(self):
+        return self.itemcode
+    
+    class Meta:
+        db_table = 'Items'
+        # unique_together = (('visitno', 'itemcode', 'itemcategoryid'), ('visitno', 'itemcategoryid', 'itemcode'),)
+        unique_together = (('visitno', 'itemcode'), ('visitno', 'itemcode'),)
+
+
+    def  __str__(self):
+        return self.itemcode
+
+class Visits(models.Model):
+    visitid = models.IntegerField(db_column='VisitID')  # Field name made lowercase.
+    visitno = models.CharField(db_column='VisitNo', primary_key=True, max_length=20)  # Field name made lowercase.
+    patientno = models.ForeignKey(Patients, models.DO_NOTHING, db_column='PatientNo', blank=True, null=True, related_name="patient_table")  # Field name made lowercase.
+    visitdate = models.DateTimeField(db_column='VisitDate', blank=True, null=True)  # Field name made lowercase.
+    # doctorspecialtyid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='DoctorSpecialtyID', blank=True, null=True)  # Field name made lowercase.
+    # staffno = models.ForeignKey(Staff, models.DO_NOTHING, db_column='StaffNo', blank=True, null=True)  # Field name made lowercase.
+    # visitcategoryid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='VisitCategoryID', blank=True, null=True)  # Field name made lowercase.
+    referredby = models.CharField(db_column='ReferredBy', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    # servicecode = models.ForeignKey(Services, models.DO_NOTHING, db_column='ServiceCode', blank=True, null=True)  # Field name made lowercase.
+    # billmodesid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='BillModesID', blank=True, null=True)  # Field name made lowercase.
+    billno = models.CharField(db_column='BillNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    insuranceno = models.CharField(db_column='InsuranceNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    # associatedbillno = models.ForeignKey(Billcustomers, models.DO_NOTHING, db_column='AssociatedBillNo', blank=True, null=True)  # Field name made lowercase.
+    membercardno = models.CharField(db_column='MemberCardNo', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    mainmembername = models.CharField(db_column='MainMemberName', max_length=41, blank=True, null=True)  # Field name made lowercase.
+    claimreferenceno = models.CharField(db_column='ClaimReferenceNo', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    # visitstatusid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='VisitStatusID', blank=True, null=True)  # Field name made lowercase.
+    accesscashservices = models.BooleanField(db_column='AccessCashServices', blank=True, null=True)  # Field name made lowercase.
+    fingerprintverified = models.BooleanField(db_column='FingerprintVerified', blank=True, null=True)  # Field name made lowercase.
+    # copaytypeid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='CoPayTypeID', blank=True, null=True)  # Field name made lowercase.
+    copaypercent = models.DecimalField(db_column='CoPayPercent', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    copayvalue = models.DecimalField(db_column='CoPayValue', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    smartcardapplicable = models.BooleanField(db_column='SmartCardApplicable', blank=True, null=True)  # Field name made lowercase.
+    # loginid = models.ForeignKey(Logins, models.DO_NOTHING, db_column='LoginID', blank=True, null=True)  # Field name made lowercase.
+    clientmachine = models.CharField(db_column='ClientMachine', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    recorddatetime = models.DateTimeField(db_column='RecordDateTime', blank=True, null=True)  # Field name made lowercase.
+    # visitspriorityid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='VisitsPriorityID', blank=True, null=True)  # Field name made lowercase.
+    locked = models.BooleanField(db_column='Locked', blank=True, null=True)  # Field name made lowercase.
+    # branchid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='BranchID', blank=True, null=True)  # Field name made lowercase.
+    # communityid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='CommunityID', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        db_table = 'Visits'
+
+    def __str__(self):
+        return self.visitno
+    
+class Paymentdetails(models.Model):
+    receiptno = models.OneToOneField('Payments', models.DO_NOTHING, db_column='ReceiptNo', primary_key=True)  # Field name made lowercase.
+    visitno = models.ForeignKey(Items, models.DO_NOTHING, db_column='VisitNo', related_name="items_vistno")  # Field name made lowercase.
+    itemcode = models.ForeignKey(Items, models.DO_NOTHING, db_column='ItemCode', related_name="items_itemcode")  # Field name made lowercase.
+    itemcategoryid = models.ForeignKey(Items, models.DO_NOTHING, db_column='ItemCategoryID')  # Field name made lowercase.
+    quantity = models.IntegerField(db_column='Quantity', blank=True, null=True)  # Field name made lowercase.
+    unitprice = models.DecimalField(db_column='UnitPrice', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    discount = models.DecimalField(db_column='Discount', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    amount = models.DecimalField(db_column='Amount', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    syncstatus = models.BooleanField(db_column='SyncStatus', blank=True, null=True)  # Field name made lowercase.
+    invoiceno = models.CharField(db_column='InvoiceNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    # visittypeid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='VisitTypeID', blank=True, null=True)  # Field name made lowercase.
+
+
+    class Meta:
+        db_table = 'PaymentDetails'
+        unique_together = (('receiptno', 'visitno', 'itemcode', 'itemcategoryid', 'itemcategoryid'),)
+
+    
+    def __str__(self):
+        return self.receiptno.receiptno
+    def my_itemcode(self):
+        return self.itemcode
+class Payments(models.Model):
+    receiptid = models.IntegerField(db_column='ReceiptID')  # Field name made lowercase.
+    receiptno = models.CharField(db_column='ReceiptNo', primary_key=True, max_length=20)  # Field name made lowercase.
+    # paytypeid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='PayTypeID', blank=True, null=True)  # Field name made lowercase.
+    payno = models.CharField(db_column='PayNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    paydate = models.DateTimeField(db_column='PayDate', blank=True, null=True)  # Field name made lowercase.
+    # paymodesid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='PayModesID', blank=True, null=True)  # Field name made lowercase.
+    documentno = models.CharField(db_column='DocumentNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    amountwords = models.CharField(db_column='AmountWords', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    notes = models.CharField(db_column='Notes', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    # currenciesid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='CurrenciesID', blank=True, null=True)  # Field name made lowercase.
+    amounttendered = models.DecimalField(db_column='AmountTendered', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    exchangerate = models.DecimalField(db_column='ExchangeRate', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    change = models.DecimalField(db_column='Change', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    sendbalancetoaccount = models.BooleanField(db_column='SendBalanceToAccount', blank=True, null=True)  # Field name made lowercase.
+    useaccountbalance = models.BooleanField(db_column='UseAccountBalance', blank=True, null=True)  # Field name made lowercase.
+    # filterno = models.ForeignKey('Visits', models.DO_NOTHING, db_column='FilterNo', blank=True, null=True)  # Field name made lowercase.
+    # loginid = models.ForeignKey(Logins, models.DO_NOTHING, db_column='LoginID', blank=True, null=True)  # Field name made lowercase.
+    clientmachine = models.CharField(db_column='ClientMachine', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    recorddatetime = models.DateTimeField(db_column='RecordDateTime', blank=True, null=True)  # Field name made lowercase.
+    # branchid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='BranchID', blank=True, null=True)  # Field name made lowercase.
+    clientfullname = models.CharField(db_column='ClientFullName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    withholdingtax = models.DecimalField(db_column='WithholdingTax', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    granddiscount = models.DecimalField(db_column='GrandDiscount', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    amount = models.DecimalField(db_column='Amount', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    cashamount = models.DecimalField(db_column='CashAmount', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'Payments'
+
+
+
+
+class Extrabills(models.Model):
+    extrabillid = models.IntegerField(db_column='ExtraBillID')  # Field name made lowercase.
+    extrabillno = models.CharField(db_column='ExtraBillNo', primary_key=True, max_length=20)  # Field name made lowercase.
+    visitno = models.ForeignKey('Visits', models.DO_NOTHING, db_column='VisitNo', blank=True, null=True)  # Field name made lowercase.
+    extrabilldate = models.DateTimeField(db_column='ExtraBillDate', blank=True, null=True)  # Field name made lowercase.
+    # staffno = models.ForeignKey('Staff', models.DO_NOTHING, db_column='StaffNo', blank=True, null=True)  # Field name made lowercase.
+    # loginid = models.ForeignKey('Logins', models.DO_NOTHING, db_column='LoginID', blank=True, null=True)  # Field name made lowercase.
+    recorddatetime = models.DateTimeField(db_column='RecordDateTime', blank=True, null=True)  # Field name made lowercase.
+    # visittypeid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='VisitTypeID', blank=True, null=True)  # Field name made lowercase.
+    # billmodesid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='BillModesID', blank=True, null=True)  # Field name made lowercase.
+    billno = models.CharField(db_column='BillNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    insuranceno = models.CharField(db_column='InsuranceNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    # associatedbillno = models.ForeignKey(Billcustomers, models.DO_NOTHING, db_column='AssociatedBillNo', blank=True, null=True)  # Field name made lowercase.
+    membercardno = models.CharField(db_column='MemberCardNo', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    mainmembername = models.CharField(db_column='MainMemberName', max_length=41, blank=True, null=True)  # Field name made lowercase.
+    claimreferenceno = models.CharField(db_column='ClaimReferenceNo', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    # copaytypeid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='CoPayTypeID', blank=True, null=True)  # Field name made lowercase.
+    copaypercent = models.DecimalField(db_column='CoPayPercent', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    copayvalue = models.DecimalField(db_column='CoPayValue', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    accesscashservices = models.BooleanField(db_column='AccessCashServices', blank=True, null=True)  # Field name made lowercase.
+    smartcardapplicable = models.BooleanField(db_column='SmartCardApplicable', blank=True, null=True)  # Field name made lowercase.
+    amount = models.DecimalField(db_column='Amount', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    amountpaid = models.DecimalField(db_column='AmountPaid', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    # paytypeid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='PayTypeID', blank=True, null=True)  # Field name made lowercase.
+    associatedextrabillno = models.ForeignKey('self', models.DO_NOTHING, db_column='AssociatedExtraBillNo', blank=True, null=True)  # Field name made lowercase.
+    originalamount = models.DecimalField(db_column='OriginalAmount', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        db_table = 'ExtraBills'
+
+
+
+class Admissions(models.Model):
+    admissionid = models.IntegerField(db_column='AdmissionID')  # Field name made lowercase.
+    admissionno = models.CharField(db_column='AdmissionNo', primary_key=True, max_length=20)  # Field name made lowercase.
+    visitno = models.OneToOneField('Visits', models.DO_NOTHING, db_column='VisitNo', blank=True, null=True)  # Field name made lowercase.
+    # staffno = models.ForeignKey('Staff', models.DO_NOTHING, db_column='StaffNo', blank=True, null=True)  # Field name made lowercase.
+    # bedno = models.ForeignKey('Beds', models.DO_NOTHING, db_column='BedNo', blank=True, null=True)  # Field name made lowercase.
+    admissiondatetime = models.DateTimeField(db_column='AdmissionDateTime', blank=True, null=True)  # Field name made lowercase.
+    admissionnotes = models.CharField(db_column='AdmissionNotes', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    # admissionstatusid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='AdmissionStatusID', blank=True, null=True)  # Field name made lowercase.
+    # loginid = models.ForeignKey('Logins', models.DO_NOTHING, db_column='LoginID', blank=True, null=True)  # Field name made lowercase.
+    clientmachine = models.CharField(db_column='ClientMachine', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    recorddatetime = models.DateTimeField(db_column='RecordDateTime', blank=True, null=True)  # Field name made lowercase.
+    chartnumber = models.CharField(db_column='ChartNumber', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    # billmodesid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='BillModesID', blank=True, null=True)  # Field name made lowercase.
+    billno = models.CharField(db_column='BillNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    insuranceno = models.CharField(db_column='InsuranceNo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    # associatedbillno = models.ForeignKey('Billcustomers', models.DO_NOTHING, db_column='AssociatedBillNo', blank=True, null=True)  # Field name made lowercase.
+    membercardno = models.CharField(db_column='MemberCardNo', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    mainmembername = models.CharField(db_column='MainMemberName', max_length=41, blank=True, null=True)  # Field name made lowercase.
+    claimreferenceno = models.CharField(db_column='ClaimReferenceNo', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    # copaytypeid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='CoPayTypeID', blank=True, null=True)  # Field name made lowercase.
+    copaypercent = models.DecimalField(db_column='CoPayPercent', max_digits=5, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    copayvalue = models.DecimalField(db_column='CoPayValue', max_digits=19, decimal_places=4, blank=True, null=True)  # Field name made lowercase.
+    accesscashservices = models.BooleanField(db_column='AccessCashServices', blank=True, null=True)  # Field name made lowercase.
+    smartcardapplicable = models.BooleanField(db_column='SmartCardApplicable', blank=True, null=True)  # Field name made lowercase.
+    patientno = models.ForeignKey('Patients', models.DO_NOTHING, db_column='PatientNo', blank=True, null=True)  # Field name made lowercase.
+    # servicecode = models.ForeignKey('Services', models.DO_NOTHING, db_column='ServiceCode', blank=True, null=True)  # Field name made lowercase.
+    provisionaldiagnosis = models.CharField(db_column='ProvisionalDiagnosis', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+       
+        db_table = 'Admissions'

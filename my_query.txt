@@ -1,0 +1,2 @@
+from patients.models import Paymentdetails  
+p=Paymentdetails.objects.filter(visitno__visitno="P160062040003")[0:1]

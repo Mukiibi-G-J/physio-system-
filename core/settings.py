@@ -49,10 +49,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main',
-    "patients",
+    
     'widget_tweaks',
     'phonenumber_field',
+    'debug_toolbar',
+    'main',
+    "patients",
+
     
 
 ]
@@ -65,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -92,7 +96,8 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'default': {},
+    'main_db': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
@@ -161,4 +166,10 @@ AUTH_USER_MODEL = 'main.CustomUser'
 LOGIN_URL = "login/"
 
 
-DATABASE_ROUTERS = ['routers.db_routers.ClincMasterRouter']
+DATABASE_ROUTERS = ['routers.db_routers.ClincMasterRouter','routers.db_routers.MainRouter']
+
+INTERNAL_IPS = [
+    
+    "127.0.0.1",
+   
+]

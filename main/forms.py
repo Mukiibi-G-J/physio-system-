@@ -60,33 +60,41 @@ class PatientForm(ModelForm):
 class PhysioSessionForm(ModelForm):
     class Meta:
         model = PhysioSession
-        fields = 'patient','date_of_visit',"doctor","diagnosis","therapy","therapist", "ward","receipt_no"
-        # widgets = {
-        #     "date": DateTimePickerInput(),
-        #     "next_visit_date": DateTimePickerInput(),
-        #     "next_visit_time": forms.TimeInput(attrs={'type': 'time'}),
-        #     "time": forms.TimeInput(attrs={'type': 'time'})
-        # }
-        
+        fields = 'date_of_visit', "doctor", "diagnosis", "therapy", "therapist", "ward", "receipt_no", "patient_type"
+    therapy = forms.ModelMultipleChoiceField(
+        queryset=Therapy.objects.all().order_by('name'),
+        widget=forms.CheckboxSelectMultiple
+    )
+    diagnosis = forms.ModelChoiceField(
+        queryset=Diagnosis.objects.all().order_by('name'),
+    )
+
+    # widgets = {
+    #     "date": DateTimePickerInput(),
+    #     "next_visit_date": DateTimePickerInput(),
+    #     "next_visit_time": forms.TimeInput(attrs={'type': 'time'}),
+    #     "time": forms.TimeInput(attrs={'type': 'time'})
+    # }
+
+
 class DoctorForm(ModelForm):
     class Meta:
         model = Doctor
-        fields = 'name', 'status'
+        fields = 'name', 'specialist', 'status'
 
 
 class TherapyForm(ModelForm):
     class Meta:
         model = Therapy
-        fields = 'name', 'status','breif_description'
-
+        fields = 'name', 'status', 'breif_description'
 
 
 class TherapistForm(ModelForm):
     class Meta:
         model = Therapist
         fields = 'name', 'email', 'telephone', 'status'
-        
-    
+
+
 class DiagnosisForm(ModelForm):
     class Meta:
         model = Diagnosis

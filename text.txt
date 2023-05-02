@@ -135,3 +135,136 @@ const patientSearch = async(e) => {
     // })
 
 }
+
+ PIN.innerHTML = `
+            <label>PIN no</label>
+            <input type="text" class="form-control" name="patient_pin" value=${response.data.pin_no} readonly />
+            `
+            edit_btn.innerHTML = `<a href = "#" class = "btn btn-icon icon-left btn-primary" > <i class="far fa-edit" > </i> Edit patient </a > `
+
+
+             patient_type.innerHTML = `
+            <label>Patient Type</label>
+            <input type="text" class="form-control" name="patient_type" value=${response.data.patient_type} readonly />
+            `
+
+
+            {% block am4Chart %}
+<!-- Page Specific JS File -->
+
+<script src="{% static 'assets/bundles/amcharts4/core.js' %}"></script>
+<script src="{% static 'assets/bundles/amcharts4/charts.js' %}"></script>
+<script src="{% static 'assets/bundles/amcharts4/animated.js' %}"></script>
+<script src="{% static 'assets/bundles/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'assets/bundles/jquery.sparkline.min.js' %}"></script>
+
+<script>
+// Create chart instance
+var chart = am4core.create("barImg", am4charts.XYChart);
+
+// Add data
+chart.data = [{
+  "name": "John",
+  "points": 35654,
+  "color": chart.colors.next(),
+  "bullet": "assets/img/users/user1-round.png"
+}, {
+  "name": "Damon",
+  "points": 65456,
+  "color": chart.colors.next(),
+  "bullet": "assets/img/users/user2-round.png"
+}, {
+  "name": "Patrick",
+  "points": 45724,
+  "color": chart.colors.next(),
+  "bullet": "assets/img/users/user3-round.png"
+}, {
+  "name": "Sarah",
+  "points": 13654,
+  "color": chart.colors.next(),
+  "bullet": "assets/img/users/user4-round.png"
+},
+{
+  "name": "Pooja",
+  "points": 32589,
+  "color": chart.colors.next(),
+  "bullet": "assets/img/users/user5-round.png"
+},
+{
+  "name": "jatin",
+  "points": 45895,
+  "color": chart.colors.next(),
+  "bullet": "assets/img/users/user6-round.png"
+},
+];
+
+</script>
+
+
+
+
+{% endblock  %}
+
+
+
+
+
+
+
+	options: {
+		legend: {
+			display: false
+		},
+		scales: {
+			yAxes: [{
+				gridLines: {
+					drawBorder: false,
+					color: '#f2f2f2',
+				},
+				ticks: {
+					beginAtZero: true,
+					stepSize: 1,
+					fontColor: "#8e8da4", // Font Color
+				}
+			}],
+			xAxes: [{
+				ticks: {
+					display: false
+				},
+				gridLines: {
+					display: true
+				}
+			}]
+		},
+	}
+
+
+
+
+ <div class="col-lg-1 col-sm-1 mr-4">
+        <div class="card">
+          <div class="dropdown d-inline mr-2">
+
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Reports
+            </button>
+            {% comment %} hx-post="/check_ward/" hx-trigger="keyup" hx-target="#ward-error" hx-swapp="outerhtml"
+            hx-get="/day_report/" hx-trigger="clicked" {% endcomment %}
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#day" hx-get="/day_report/" hx-trigger="click" hx-target="#day-data" hx-swap="outerHTML">Day</a>
+              <a class="dropdown-item" href="#">Week</a>
+              <a class="dropdown-item" href="#">Quarterly</a>
+              <a class="dropdown-item" href="#">Year</a>
+
+          
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+          visit_no.innerHTML = `
+            <label>Visit no</label>
+            <input type="text" class="form-control" name="visit_no" value=${response.data.visit_no} readonly />
+                `

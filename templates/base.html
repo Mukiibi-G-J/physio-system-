@@ -32,7 +32,11 @@
 
   <script src="{% static 'js/htmx.min.js' %}"></script>
   <script src={% static 'js/index.js' %}></script>
-
+<sytle>
+  my_container12 {
+    border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll;
+  }
+  </style>
 
   </head>
 
@@ -55,6 +59,8 @@
 
     {% block scripts %}{% endblock scripts %}
     {% block chartjs %} {% endblock %}
+    {% block am4Chart %}{% endblock  %}
+    {% block chart_1 %}{% endblock chart_1 %}
     <script type=text/javascript>
       function my() {
         iziToast.warning({
@@ -80,12 +86,8 @@
      <!-- JS Libraies -->
      <script src="{% static 'assets/bundles/izitoast/js/iziToast.min.js' %}"></script>
 
-     <!-- Page Specific JS File -->
-  <script src="{% static 'assets/bundles/apexcharts/apexcharts.min.js' %}"></script>
-  <script src="{% static 'assets/bundles/amcharts4/core.js' %}"></script>
-  <script src="{% static 'assets/bundles/amcharts4/charts.js' %}"></script>
-  <script src="{% static 'assets/bundles/amcharts4/animated.js' %}"></script>
-  <script src="{% static 'assets/bundles/jquery.sparkline.min.js' %}"></script>
+
+
   <!-- Page Specific JS File -->
   <script src="{% static 'assets/js/page/index.js' %}"></script>
   <!-- Template JS File -->

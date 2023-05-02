@@ -38,6 +38,7 @@ class CustomUser(AbstractUser):
     # email = models.EmailField(unique=True)
     # contact = models.CharField(max_length=9)
     # devices = models.ManyToManyField(Devices)
+    therapist = models.BooleanField(default=False)
     phone_number = PhoneNumberField()
 
 
@@ -112,9 +113,10 @@ class Patient(models.Model):
     sex = models.CharField(choices=gender, max_length=10)
     in_patient = models.BooleanField(default=False)
     out_patient = models.BooleanField(default=False)
-    patient_type = models.CharField(max_length=200, choices=patient_type_chocie)
-    created_at =models.DateTimeField(auto_now=True)
-    
+    patient_type = models.CharField(
+        max_length=200, choices=patient_type_chocie)
+    created_at = models.DateTimeField(auto_now=True)
+
     @property
     def get_full_name(self):
         return self.surname + " " + self.first_name
@@ -125,6 +127,9 @@ class Patient(models.Model):
 
 class Doctor(models.Model):
     name = models.CharField(max_length=255, unique=True)
+
+    specialist = models.CharField(
+        max_length=255, null=True, blank=True, default="Orthopaedic Officer")
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
@@ -133,7 +138,7 @@ class Doctor(models.Model):
 
 
 class Ward(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     breif_description = models.TextField(
         null=True, blank=True, default="No description")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -149,15 +154,27 @@ class PhysioSession(models.Model):
         ('OUT PATIENT', 'OUT PATIENT')
     ]
     therapist = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
-    patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
+    patient_surname = models.CharField(max_length=255)
+    patient_name = models.CharField(max_length=255)
+    patient_no = models.CharField(max_length=255)
     date = models.DateTimeField(auto_now_add=True)
     date_of_visit = models.DateField(auto_now_add=False)
-    doctor = models.ForeignKey(Doctor, on_delete=models.PROTECT)
-    diagnosis = models.ForeignKey(Diagnosis, on_delete=models.PROTECT)
-    therapy = models.ForeignKey(Therapy, on_delete=models.PROTECT)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    therapy = models.ManyToManyField(Therapy, default="Old Therapy")
+    old_therapy = models.CharField(max_length=255, null=True, blank=True)
+    diagnosis = models.ForeignKey(Diagnosis, on_delete=models.CASCADE)
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT)
+    patient_type = models.CharField(max_length=200, choices=patientType)
     status = models.BooleanField(default=False)
     receipt_no = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def full_name(self):
+        return f"{self.patient_name} {self.patient_surname}"
+
+    def __str__(self):
+        return self.full_name
 
 
 class Therapist(models.Model):

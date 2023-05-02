@@ -23,15 +23,16 @@
           <li class="breadcrumb-item">Export Tables</li>
         </ul>
         <div class="section-body">
+       
           <div class="row">
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>Export Table</h4>
+                  <h4>Table With State Save</h4>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
+                    <table class="table table-striped table-hover" id="save-stage" style="width:100%;">
                       <thead>
                         <tr>
                           <th>PIN NO</th>
@@ -45,36 +46,30 @@
                         <th>Receipt No</th>
                         </tr>
                       </thead>
-                      <tbody>
-                       {% for p in physioSessions %}
+                     <tbody>
+                      {% for p in physioSessions %}
                        
                        
                        
-                       <tr>
-                         <td>{{ p.patient.pin_no }}</td>
-                        <td>{{ p.patient.get_full_name}}</td>
-                        <td>{{ p.date_of_visit}}</td>
-                        <td>{{ p.doctor }}</td>
-                        <td>{{ p.diagnosis }}</td>
-                        <td>{{ p.therapy }}</td>
-                        <td>{{ p.ward }}</td>
-                        <td>{{ p.therapist }}</td>
+                      <tr>
+                        <td>{{ p.patient_no }}</td>
+                       <td>{{ p.full_name}}</td>
+                       <td>{{ p.date_of_visit}}</td>
+                       <td>{{ p.doctor }}</td>
+                       <td>{{ p.old_diagnosis }}</td>
+                       <td>{{ p.therapy }}</td>
+                       <td>{{ p.ward }}</td>
+                       <td>{{ p.therapist }}</td>
 
 
-                        <td>{{ p.receipt_no }}</td>
+                       <td>{{ p.receipt_no }}</td>
 
-                      </tr>
-                       
-                       
-                       {% endfor %}
-                       
-
-
-
-
-                    
-                       
-                      </tbody>
+                     </tr>
+                      
+                      
+                      {% endfor %}
+                      
+                     </tbody>
                     </table>
                   </div>
                 </div>

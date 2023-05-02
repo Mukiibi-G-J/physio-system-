@@ -13,79 +13,140 @@ import datetime
 from django.http import JsonResponse
 # Import date class from datetime module
 from datetime import date
-from  patients.models import Patients
-from  .models import  Patient
+from patients.models import Patients, Visits, Extrabills, Paymentdetails, Admissions
+from .models import Patient
+import pandas as pd
+from patients.models import Items
+from django.db.models import Q
+from django.db.models import F
 
 # Returns the current local date
 
 # from django.contrib.auth.models import User
 # from django.contrib.auth import get_user_model
 
+
 def dashboard(request):
     patients = Patient.objects.all().count()
+    ward = Ward.objects.all()
     physio_sessions = PhysioSession.objects.all().count()
-    patient_month = PhysioSession.objects.filter(date__month=date.today().month).count()
-    patient_last_month = PhysioSession.objects.filter(date__month=date.today().month-1).count()
-    patient_quarter = PhysioSession.objects.filter(date__month__in=[1,2,3]).count()
-    patient_year = PhysioSession.objects.filter(date__year=date.today().year).count()
+    inpatient = PhysioSession.objects.filter(patient_type="IN PATIENT").count()
+    outpatient = PhysioSession.objects.filter(
+        patient_type="OUT PATIENT").count()
+    patient_month = PhysioSession.objects.filter(
+        date__month=date.today().month).count()
+    patient_last_month = PhysioSession.objects.filter(
+        date__month=date.today().month-1).count()
+    patient_quarter = PhysioSession.objects.filter(
+        date__month__in=[1, 2, 3]).count()
+    therapist = CustomUser.objects.filter(therapist=True)
+    patient_year = PhysioSession.objects.filter(
+        date__year=date.today().year).count()
     current_year = date.today().year
-    
+
     last_year = date.today().year-1
     current_month = date.today().month
     last_month = date.today().month-1
     current_week = date.today().isocalendar()[1]
     last_week = date.today().isocalendar()[1]-1
-    
-    jan_last_year = PhysioSession.objects.filter(date__month__in=[1],date__year=date.today().year-1).count()
-    feb_last_year = PhysioSession.objects.filter(date__month__in=[2],date__year=date.today().year-1).count()
-    mar_last_year = PhysioSession.objects.filter(date__month__in=[3],date__year=date.today().year-1).count()
-    apr_last_year = PhysioSession.objects.filter(date__month__in=[4],date__year=date.today().year-1).count()
-    may_last_year = PhysioSession.objects.filter(date__month__in=[5],date__year=date.today().year-1).count()
-    jun_last_year = PhysioSession.objects.filter(date__month__in=[6],date__year=date.today().year-1).count()
-    jul_last_year = PhysioSession.objects.filter(date__month__in=[7],date__year=date.today().year-1).count()
-    aug_last_year = PhysioSession.objects.filter(date__month__in=[8],date__year=date.today().year-1).count()
-    sep_last_year = PhysioSession.objects.filter(date__month__in=[9],date__year=date.today().year-1).count()
-    oct_last_year = PhysioSession.objects.filter(date__month__in=[10],date__year=date.today().year-1).count()
-    nov_last_year = PhysioSession.objects.filter(date__month__in=[11],date__year=date.today().year-1).count()
-    dec_last_year = PhysioSession.objects.filter(date__month__in=[12],date__year=date.today().year-1).count()
-    physio_session_last_year = [jan_last_year,feb_last_year,mar_last_year,apr_last_year,may_last_year,jun_last_year,jul_last_year,aug_last_year,sep_last_year,oct_last_year,nov_last_year,dec_last_year] 
-    
-    jan = PhysioSession.objects.filter(date__month__in=[1]).count()
-    feb = PhysioSession.objects.filter(date__month__in=[2]).count()
-    mar = PhysioSession.objects.filter(date__month__in=[3]).count()
-    apr = PhysioSession.objects.filter(date__month__in=[4]).count()
-    may = PhysioSession.objects.filter(date__month__in=[5]).count()
-    jun = PhysioSession.objects.filter(date__month__in=[6]).count()
-    jul = PhysioSession.objects.filter(date__month__in=[7]).count()
-    aug = PhysioSession.objects.filter(date__month__in=[8]).count()
-    sep = PhysioSession.objects.filter(date__month__in=[9]).count()
-    oct = PhysioSession.objects.filter(date__month__in=[10]).count()
-    nov = PhysioSession.objects.filter(date__month__in=[11]).count()
-    dec = PhysioSession.objects.filter(date__month__in=[12]).count()
-    physio_session_current_year = [jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec]
-          
-    
-    
-    patient_last_year = PhysioSession.objects.filter(date__year=date.today().year-1)
-    print(patient_month,patient_last_month,patient_quarter)
+
+    jan_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[1], date_of_visit__year=date.today().year-1).count()
+    feb_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[2], date_of_visit__year=date.today().year-1).count()
+    mar_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[3], date_of_visit__year=date.today().year-1).count()
+    apr_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[4], date_of_visit__year=date.today().year-1).count()
+    may_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[5], date_of_visit__year=date.today().year-1).count()
+    jun_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[6], date_of_visit__year=date.today().year-1).count()
+    jul_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[7], date_of_visit__year=date.today().year-1).count()
+    aug_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[8], date_of_visit__year=date.today().year-1).count()
+    sep_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[9], date_of_visit__year=date.today().year-1).count()
+    oct_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[10], date_of_visit__year=date.today().year-1).count()
+    nov_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[11], date_of_visit__year=date.today().year-1).count()
+    dec_last_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[12], date_of_visit__year=date.today().year-1).count()
+    physio_session_last_year = [jan_last_year, feb_last_year, mar_last_year, apr_last_year, may_last_year,
+                                jun_last_year, jul_last_year, aug_last_year, sep_last_year, oct_last_year, nov_last_year, dec_last_year]
+
+    # jan = PhysioSession.objects.filter(date_of_visit__month__in=[1]).count()
+    # feb = PhysioSession.objects.filter(date_of_visit__month__in=[2]).count()
+    # mar = PhysioSession.objects.filter(date_of_visit__month__in=[3]).count()
+    # apr = PhysioSession.objects.filter(date_of_visit__month__in=[4]).count()
+    # may = PhysioSession.objects.filter(date_of_visit__month__in=[5]).count()
+    # jun = PhysioSession.objects.filter(date_of_visit__month__in=[6]).count()
+    # jul = PhysioSession.objects.filter(date_of_visit__month__in=[7]).count()
+    # aug = PhysioSession.objects.filter(date_of_visit__month__in=[8]).count()
+    # sep = PhysioSession.objects.filter(date_of_visit__month__in=[9]).count()
+    # oct = PhysioSession.objects.filter(date_of_visit__month__in=[10]).count()
+    # nov = PhysioSession.objects.filter(date_of_visit__month__in=[11]).count()
+    # dec = PhysioSession.objects.filter(date_of_visit__month__in=[12]).count()
+    jan_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[1], date_of_visit__year=date.today().year).count()
+    feb_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[2], date_of_visit__year=date.today().year).count()
+    mar_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[3], date_of_visit__year=date.today().year).count()
+    apr_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[4], date_of_visit__year=date.today().year).count()
+    may_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[5], date_of_visit__year=date.today().year).count()
+    jun_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[6], date_of_visit__year=date.today().year).count()
+    jul_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[7], date_of_visit__year=date.today().year).count()
+    aug_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[8], date_of_visit__year=date.today().year).count()
+    sep_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[9], date_of_visit__year=date.today().year).count()
+    oct_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[10], date_of_visit__year=date.today().year).count()
+    nov_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[11], date_of_visit__year=date.today().year).count()
+    dec_current_year = PhysioSession.objects.filter(
+        date_of_visit__month__in=[12], date_of_visit__year=date.today().year).count()
+
+    physio_session_current_year = [jan_current_year, feb_current_year, mar_current_year, apr_current_year, may_current_year,
+                                   jun_current_year, jul_current_year, aug_current_year, sep_current_year, oct_current_year, nov_current_year, dec_current_year]
+    print(physio_session_current_year)
+    patient_last_year = PhysioSession.objects.filter(
+        date__year=date.today().year-1)
+    print(patient_month, patient_last_month, patient_quarter)
 
     context = {
+        'ward': ward,
+        'therapist': therapist,
+        "current_year": current_year,
+        "last_year": last_year,
         'patients': patients,
+        'inpatient': inpatient,
+        'outpatient': outpatient,
         'physio_sessions': physio_sessions,
-        "physio_session_current_year":physio_session_current_year,
-        "physio_session_last_year":physio_session_last_year,
+        "physio_session_current_year": physio_session_current_year,
+        "physio_session_last_year": physio_session_last_year,
     }
-    
-    
+
     return render(request, 'Dashboard/dashboard.html', context)
 
-def device_status(request):
-    devices = PersonBooking.objects.all()
-    for d in devices:
 
-        print(d.devices.name)
-    return render(request, 'device_status.html', {'devices': devices})
+def day_report(request):
+    pyhsio_sessions_day = PhysioSession.objects.filter(
+        date_of_visit=date.today()).count()
+    return HttpResponse(f'<span>{pyhsio_sessions_day}</span>')
+# def week_report(request):
+#     pyhsio_sessions = PhysioSession.objects.filter(date__week=date.today().isocalendar()[1])
+#     return
 
+# def month_report(request):
+#     pyhsio_sessions = PhysioSession.objects.filter(date__month=date.today().month)
 
 
 def ward_reports(request):
@@ -94,7 +155,9 @@ def ward_reports(request):
     for w in wards:
         patient_count = PhysioSession.objects.filter(ward=w).count()
         ward_count.append(patient_count)
-    return render(request, 'Ward/ward_report.html', {'wards': wards,"ward_count":ward_count})
+    return render(request, 'Ward/ward_report.html', {'wards': wards, "ward_count": ward_count})
+
+
 @login_required
 def home(request):
     form = PersonBookingForm()
@@ -231,10 +294,10 @@ def login_user(request):
 
     }
     if request.method == 'POST':
-        username = request.POST.get("department").upper()
+        username = request.POST.get("department")
         password = request.POST.get("password")
         user = authenticate(
-            request, username=username, password=password)
+            requessername=username, password=password)
         if not user:
             print('test3')
             messages.add_message(request, messages.ERROR,
@@ -257,15 +320,17 @@ def logout_user(request):
     return redirect(reverse("login"))
 
 
-@auth_user_should_not_access
+# @auth_user_should_not_access
 def register_user(request):
     if request.method == "POST":
         context = {"has_error": False, "data": request.POST}
-        department = str(request.POST.get("department")).upper()
+        username = request.POST.get("username")
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
         phone = request.POST.get("phone")
         password = request.POST.get("password")
         password2 = request.POST.get("password2")
-        print(department, phone, password, password2)
+        print(username, first_name, last_name, phone, password, password2)
 
         if len(password) < 6:
             messages.add_message(
@@ -278,7 +343,7 @@ def register_user(request):
             messages.add_message(request, messages.ERROR, "Password mismatch")
             context["has_error"] = True
 
-        if CustomUser.objects.filter(username=department).exists():
+        if CustomUser.objects.filter(username=username).exists():
             messages.add_message(
                 request, messages.ERROR, "Username is taken, choose another one"
             )
@@ -296,22 +361,29 @@ def register_user(request):
         #     return render(request, "authentication/register.html", context)
 
         user = CustomUser.objects.create_user(
-            username=department, phone_number=phone)
+            username=username, first_name=first_name, last_name=last_name, phone_number=phone)
+
+        user.therapist = True
         user.set_password(password)
         user.save()
-        return redirect('login')
+        messages.add_message(request, messages.SUCCESS,
+                             f"{user.username} Registered successfully")
+        return redirect('register')
+
+    # if request.method == "GET":
+    #     df = pd.read_csv('therapist.csv')
+    #     surname = df['Surname']
+    #     last_name = df['First name']
+    #     df_dict = pd.DataFrame().assign(
+    #         surname=surname, last_name=last_name).to_dict(orient='records')
+    #     for x in df_dict:
+    #         user = CustomUser.objects.create_user(
+    #             username=x['surname'], first_name=x['last_name'], last_name=x['surname'], phone_number='123456789')
+    #         user.therapist = True
+    #         user.set_password('123456')
+    #         user.save()
+
     return render(request, "register.html")
-
-
-def check_department(request):
-    department = str(request.POST.get('department')).upper()
-    print(department)
-    # when u add .exists it returns true or false
-    if CustomUser.objects.filter(username=department).exists():
-        print('true')
-        return HttpResponse('<div style="color:red;"> This Department is already registered</div>')
-    else:
-        return HttpResponse('<div style="color:green;"> This is Department is Ok </div>')
 
 
 def check_phone(request):
@@ -391,22 +463,6 @@ def check_time(request):
     return HttpResponse('<div style="color:red;"> End Time should greater than Start Time</div>')
 
 
-def add_cables(request):
-    if request.method == "POST":
-        name = request.POST.get('name')
-        if Cable.objects.filter(name=name).exists():
-            messages.add_message(request, messages.ERROR,
-                                 "Cable is already registered")
-            return render(request, 'add_cables.html')
-
-        user = Cable.objects.create(name=name)
-        user.save()
-        messages.add_message(request, messages.SUCCESS,
-                             "Cable added successfully")
-        return redirect('home')
-
-    return render(request, "add_cables.html")
-
 # <---------------------------------------patient_--------------------->
 
 
@@ -443,78 +499,221 @@ def physio_session(request):
         # physioSession = PhysioSessionForm(request.POST)
         therapy_id = request.POST.get("therapy")
         diagnosis_id = request.POST.get("diagnosis")
-        doctor_id=  request.POST.get("doctor")
+        doctor_id = request.POST.get("doctor")
         receipt_no = request.POST.get("receipt_no")
-        date_of_visit =request.POST.get('date_of_visit')
-        patient_id = request.POST.get('id')
+        date_of_visit = request.POST.get('date_of_visit')
+        patient_no = request.POST.get('patient_pin')
+        patient_name = request.POST.get('patient_name')
+        patient_surname = request.POST.get('patient_surname')
+        patient_type = request.POST.get('patient_type')
         ward_id = request.POST.get('ward')
-        patient = Patient.objects.get(id=patient_id)
         doctor = Doctor.objects.get(id=doctor_id)
-        therapy = Therapy.objects.get(id=therapy_id)
         diagnosis = Diagnosis.objects.get(id=diagnosis_id)
-        ward   = Ward.objects.get(id=ward_id)
+        ward = Ward.objects.get(id=ward_id)
         user = request.user.pk
+        therapy = therapy_id.split(',')
 
         user = CustomUser.objects.get(id=user)
         print(user)
-        physiosession = PhysioSession.objects.create(therapy=therapy, diagnosis=diagnosis, doctor=doctor, receipt_no=receipt_no, date_of_visit=date_of_visit, patient='ooo', therapist=user, ward=ward)
+        physiosession = PhysioSession.objects.create(diagnosis=diagnosis, doctor=doctor, receipt_no=receipt_no, date_of_visit=date_of_visit,
+                                                     therapist=user, ward=ward, patient_no=patient_no, patient_name=patient_name, patient_type=patient_type, patient_surname=patient_surname)
+
         physiosession.save()
-        messages.add_message(request, messages.SUCCESS, "Physio Session booked successfully")
+        physiosession.therapy.add(therapy)
+
+        messages.add_message(request, messages.SUCCESS,
+                             "Physio Session booked successfully")
         return redirect('physio-session-table')
+    # if request.method == "GET":
+    #     PhysioSession.objects.filter(patient_type='OUT PATIENT').delete()
+    #     df = pd.read_csv('out_patient.csv').to_dict('records')
+    #     # df ={'Surname': 'Mwesigye', 'First_Name': 'Emma', 'Date': '2022-07-11', 'Doctor': 'Kyazze solomon', 'Diagnosis': 'Lumbar and cervical spondylosis', 'Therapy': 'Orthotics', 'Therapist': 'Mugalu', 'Ward': 'Others', 'Receipt': 'R22-131059', 'Pin_Nr': 'P220023980'},
+    #     for i in df:
+    #         # if it does not exist
+    #         if not CustomUser.objects.filter(username=str(i['Therapist']).strip().capitalize()).exists():
+    #             print(i['Therapist'])
+    #             therapist = CustomUser.objects.create_user(username=i['Therapist'], password='12345678', email=i['Therapist']+'@gmail.com',
+    #                                                        first_name=i['Therapist'], last_name=i['Therapist'], is_staff=True, is_active=True, is_superuser=False, therapist=True)
+    #             therapist.save()
+    #         if not  Ward.objects.filter(name=i['Ward']).exists():
+    #             print(i['Ward'])
+    #         # if not  Therapy.objects.filter (name=i['Therapy']).exists():
+    #         #     print(i['Therapy'])
+    #         #     therapy = Therapy.objects.create(name=i['Therapy'])
+    #         #     therapy.save()
+
+    #         if not Doctor.objects.filter(name=i['Doctor']).exists():
+    #             print(i['Doctor'])
+    #             doctor = Doctor.objects.create(name=i['Doctor'])
+    #             doctor.save()
+
+    #         if not  Diagnosis.objects.filter(name=i['Diagnosis']).exists():
+    #             print(i['Diagnosis'])
+    #             diagnosis = Diagnosis.objects.create(name=i['Diagnosis'])
+    #             diagnosis.save()
+    #         physio_session = PhysioSession.objects.create(date_of_visit=str(i['Date']), receipt_no=i['Receipt'], patient_no=i['Pin_Nr'], patient_name=i['First_Name'],
+    #                                                       patient_surname=i['Surname'], patient_type='OUT PATIENT', ward=Ward.objects.get(name=i['Ward']), doctor=Doctor.objects.get(name=i['Doctor']), therapist=CustomUser.objects.get(username=i['Therapist']),
+    #                                                       diagnosis=Diagnosis.objects.get(
+    #                                                         name=i['Diagnosis']),
+    #                                                         old_therapy=i['Therapy'])
+
+    #         physio_session.save()
+    #         messages.add_message(
+    #             request, messages.SUCCESS, f"Physio Session {i['Surname']} booked successfully")
+
     return render(request, 'Patient/add_physio_session.html', {'form': physioSessionForm})
 
+
 def physio_session_table(request):
-    physioSession = PhysioSession.objects.all()
-    
+    physioSession = PhysioSession.objects.all().order_by('-id')[0:100]
+
     return render(request, 'Patient/physio_session_table.html', {'physioSessions': physioSession})
 #  <------- HTMX ---------->
-
-
-def search_patient(request):
-    pass
 
 
 def get_patient(request, pk):
     res = "not thing much"
     pk = f"P{pk}"
-    print
     p = get_object_or_404(Patients, pk=pk)
-    print(p)
-    res = { 
+
+    # pt=Paymentdetails.objects.filter(visitno__visitno="P2300000010001").select_related("receiptno").filter(Q(itemcode="PHS04") | Q(itemcode="PHS004") |Q(itemcode="PH0010"))
+    # showw all the  p method
+    print(p.totalvisits)
+    if p.totalvisits == None:
+        print("it runser")
+        messages.add_message(request, messages.ERROR,
+                             "Please first register for a visit")
+        return redirect('physio-session')
+
+    else:
+        # pick the last visit in the list
+        visit_no = str(Visits.objects.filter(
+            patientno__patientno=p.patientno).order_by('-visitid')[0])
+        print(visit_no)
+        res = {
             "pk": "",
             "surname": p.lastname,
-            'firstname':p.firstname,
+            'firstname': p.firstname,
             "pin_no": p.patientno,
+            "visit_no": visit_no,
             "patient_type": "",
-
+            "receipt_no": "",
+            "invoice_no": "",
+            "extra_billno": "",
+            "admission_no": "",
+            "patient_type": "",
         }
-    return JsonResponse({"data": res}, status=200)
+        try:
+            receipt = Paymentdetails.objects.filter(visitno__visitno=f"{res['visit_no']}").select_related(
+                "receiptno").filter(Q(itemcode="PHS04") | Q(itemcode="PHS004") | Q(itemcode="PH0010")).values()
+            if receipt.exists():
+                receipt_no_dic = receipt[0]
+                new_receipt_no = receipt_no_dic['receiptno_id']
+                res['receipt_no'] = new_receipt_no
+                if 'invoice_no' in res:
+                    del res['invoice_no']
 
-# @csrf_exempt
-# def search_patient(request):
-#     search_text = request.POST.get('search')
-#     results = Patient.objects.filter(surname__icontains=search_text)
-#     context = {'results': results}
-#     # return render(request, '_partials/search.html', context)
-#     res = None
-#     data = []
-#     if len(results) > 0 and len(search_text) > 0:
-#         for i in results:
-#             item = {
-#                 "pk": i.pk,
-#                 "name": i.surname,
-#                 "pin no": i.pin_no,
-#                 "patinet type": i.patient_type,
-#             }
-#             data.append(item)
-#         res = data
-#     else:
-#         res = "No games found ........"
+                res["patient_type"] = "OUT-PATIENT"
+                print(res)
 
-#             # return JsonResponse({"data": list(qs.values())})
-#         # print(qs)
-#         return render(request, '_partials/search.html', {"results": res})
-#     return render(request, '_partials/search.html', {"results":"res"})
+                print({"receipt": res["receipt_no"]})
+
+            elif Items.objects.filter(visitno=f"{res['visit_no']}").exists():
+                for i in Items.objects.filter(visitno=f"{res['visit_no']}"):
+                    if i.itemcode == "PHS04" or i.itemcode == "PHS004" or i.itemcode == "PH0010":
+                        res['invoice_no'] = i.invoiceno
+                        if 'receipt_no' in res:
+                            del res['receipt_no']
+                        res["patient_type"] = "OUT-PATIENT"
+                        print(res)
+
+                        print({"invoice": res["invoice_no"]})
+            # if Extrabills.objects.filter(visitno=f"{res['visit_no']}").exists():
+            #     # Extrabills.objects.filter(
+            #     #     visitno=f"{res['visit_no']}").exists()
+            #     print("it is working")
+            #     for i in Extrabills.objects.filter(visitno=f"{res['visit_no']}"):
+            #         # if i.itemcode == "PHS04" or i.itemcode == "PHS004" or i.itemcode == "PH0010":
+            #         res['invoice_no'] = "no_invoice"
+            #         res['receipt_no'] = "no_receipt"
+            #         res['extra_bill_no'] = i.extrabillno
+            #         admissin_no = Admissions.objects.get(
+            #             visitno=f"{res['visit_no']}").admissionno
+            #         res['admission_no'] = admissin_no
+            #         res["patient_type"] = "IN-PATIENT"
+            #         print(res)
+            #         print({"admission": res["admission_no"]})
+
+        except:
+            print("it is not working")
+            messages.add_message(request, messages.ERROR,
+                                 "Please first register for a visit")
+            return render(request, 'Patient/add_physio_session.html')
+        print(res)
+        if Extrabills.objects.filter(visitno=f"{res['visit_no']}").exists():
+            # Extrabills.objects.filter(
+            #     visitno=f"{res['visit_no']}").exists()
+            print("it is working")
+            for i in Extrabills.objects.filter(visitno=f"{res['visit_no']}"):
+                # if i.itemcode == "PHS04" or i.itemcode == "PHS004" or i.itemcode == "PH0010":
+                print(i.extrabillno)
+
+                res['extra_bill_no'] = i.extrabillno
+                if 'receipt_no' in res:
+                    del res['receipt_no']
+
+                if 'invoice_no' in res:
+                    del res['invoice_no']
+
+                admission_no = Admissions.objects.get(
+                    visitno=f"{res['visit_no']}").admissionno
+                res['admission_no'] = admission_no
+                res["patient_type"] = "IN-PATIENT"
+                print({"admission": res["admission_no"]})
+        print(res)
+        return JsonResponse({"data": res}, status=200)
+
+    # try:
+    #     receipt=Paymentdetails.objects.filter(visitno__visitno=f"{res['visit_no']}").select_related("receiptno").filter(Q(itemcode="PHS04") | Q(itemcode="PHS004") |Q(itemcode="PH0010")).values()
+    #     receipt_no_dic = receipt[0]
+    #     new_receipt_no = receipt_no_dic['receiptno_id']
+    #     res['receipt_no']=new_receipt_no
+    #     print(res)
+    #     print(receipt)
+    # except:
+    #     messages.add_message(request, messages.ERROR,"Please first register for a visit")
+    #     return render(request, 'Patient/add_physio_session.html')
+
+    # p = Paymentdetails.objects.filter(visitno__visitno=f"{res['visit_no']}").select_related("receiptno").get(itemcode__items="PHS004")
+    # z = Paymentdetails.objects.filter(
+    #     visitno__visitno=f"{res['visit_no']}").prefetch_related('itemcode')
+    # items = Items.objects.filter(visitno__visitno=f"{res['visit_no']}")
+    # test = Paymentdetails.objects.select_related("receiptno")
+    # print(z)
+
+    # for t in p:
+
+    #     print('hello')
+    #     print(t.receiptno)
+        # print(t.visitno)
+    # for i in items:
+    #     if i.itemcode == "PHS004" or i.itemcode == "PHS005" or i.itemcode == "PHS0010":
+    #         p = i
+
+    # print(items)
+    # for i in p:
+    #     # print(i.itemcode)
+    #     print(i.my_itemcode)
+    # item = Items.objects.get(visitno=res['visit_no'])
+    # print(item)d
+    # items = Items.objects.filter(visitno__visitno=f"{res['visit_no']}")
+
+    # for i in items:
+    #     if i.itemcode == "PHS004" or i.itemcode == "PHS005" or i.itemcode == "PHS0010":
+    #         print(i)
+    #         print(p)
+
+
 # <--------------------ward-------------------------------->
 def add_ward(request):
     wardform = WardForm()
@@ -533,10 +732,34 @@ def add_ward(request):
             return redirect('ward-table')
     return render(request, 'ward/add_ward.html', {'form': wardform})
 
-def  ward_table(request):
+
+def ward_table(request):
     ward = Ward.objects.all()
-    
+
+    # df = pd.read_csv('ward.csv')
+    # df_ward = df["Ward"].to_list()
+    # for x in df_ward:
+    #     ward1 = Ward.objects.create(name=x)
+    #     ward1.save()
+    #     messages.add_message(request, messages.SUCCESS,
+    #  f"Ward {x} added successfully")
     return render(request, 'ward/ward_table.html', {'wards': ward})
+
+
+def check_ward(request):
+    ward = request.POST.get('name')
+    name_split = ward.split(' ')
+    first_name = str(name_split[0]).capitalize()
+    last_name = str(name_split[1]).capitalize()
+    full_name = f"{first_name} {last_name}"
+    # when u add .exists it returns true or false
+    if Ward.objects.filter(name=full_name).exists():
+        print('true')
+        return HttpResponse('<div style="color:red;"> This Ward is already registered</div>')
+    else:
+        return HttpResponse('<div style="color:green;"> This is Ward name is Ok </div>')
+
+
 # <--------------------------------doctors-------------------------------------->
 def add_doctor(request):
     doctorform = DoctorForm()
@@ -559,8 +782,35 @@ def add_doctor(request):
 
 
 def doctor_table(request):
-    doctor = Doctor.objects.all()
+    doctor = Doctor.objects.all().order_by('name')
+
+    # df_doctor = pd.read_csv('doctor.csv').drop_duplicates()
+    # df_doctor_name = df_doctor['Doctor']
+    # df_doctor_description = df_doctor['Status']
+    # df = pd.DataFrame({'Doctor': df_doctor_name, 'Description': df_doctor_description})
+    # doctor_dict = df.to_dict('records')
+    # for d in doctor_dict:
+    #     print(d)
+    #     doctor1 = Doctor.objects.create(name=d['Doctor'], specialist=d['Description'])
+    #     doctor1.save()
+    # print(doctor_dict)
+
     return render(request, 'doctor/doctor_table.html', {'doctors': doctor})
+
+
+def check_doctor(request):
+    doctor = request.POST.get('name')
+    name_split = doctor.split(' ')
+    first_name = str(name_split[0]).capitalize()
+    last_name = str(name_split[1]).capitalize()
+    full_name = f"{first_name} {last_name}"
+    print(full_name)
+    # when u add .exists it returns true or false
+    if Doctor.objects.filter(name=full_name).exists():
+        print('true')
+        return HttpResponse('<div style="color:red;"> This Doctor is already registered</div>')
+    else:
+        return HttpResponse('<div style="color:green;"> This is Doctor is Ok </div>')
 
 
 # <--------------------------------Diagonsis-------------------------------------->
@@ -584,8 +834,18 @@ def add_diagnosis(request):
 
 
 def diagnosis_table(request):
-    diganosis = Diagnosis.objects.all()
-    return render(request, 'Diagnosis/diagnosis_table.html', {'diagnosiss': diganosis})
+    # fetch diagnosis basicing on  all the diagnosis order by  alphabetically
+    diagnosis = Diagnosis.objects.all().order_by('name')
+    # df = pd.read_csv('diagnosis.csv')
+    # df_diagnosis = df["Diagnosis"].to_list()
+    # for x in df_diagnosis:
+    #     diagnosis1 = Diagnosis.objects.create(name=x)
+    #     diagnosis1.save()
+    #     messages.add_message(request, messages.SUCCESS,
+    #                          f"Diagnosis {x} added successfully")
+    return render(request, 'Diagnosis/diagnosis_table.html', {'diagnosiss': diagnosis})
+
+
 # <---------------------------------Therapy--------------------------->
 
 
@@ -608,7 +868,18 @@ def add_therapy(request):
 
 
 def therapy_table(request):
-    therapy = Therapy.objects.all()
+    therapy = Therapy.objects.all().order_by('name')
+
+    # df_therapy = pd.read_csv('therapy.csv')
+    # df_therapy = df_therapy.drop_duplicates()
+    # df_therapy = df_therapy['Therapy'].to_list()
+    # for x in  df_therapy:
+    #     therapy_create = Therapy.objects.create(
+    #         name=x,
+    #         )
+    #     therapy_create.save()
+    #     messages.add_message(request, messages.SUCCESS, f"Therapy added successfully")
+
     return render(request, 'Therapy/therapy_table.html', {'therapys': therapy})
 
 
@@ -616,13 +887,12 @@ def search_results(request):
     #! if request.is_ajax and request.method == "POST":
     #! checkin if request is ajax
     if request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
-        
+
         name = request.POST.get("name").capitalize()
         res = None
         qs = Patients.objects.filter(patientno__icontains=name)
         data = []
-        
-        
+
         if len(qs) > 0 and len(name) > 0:
             for i in qs:
                 item = {
@@ -632,6 +902,8 @@ def search_results(request):
                     "surname": i.lastname,
 
                 }
+
+                # print(f"{str(i.patientno)}000{str(i.totalvisits)}")
                 data.append(item)
             res = data
         else:
@@ -641,48 +913,3 @@ def search_results(request):
         # print(qs)
         return JsonResponse({"data": res}, status=200)
     return JsonResponse({"data": "Not found"}, status=400)
-
-
-def searchPatient(request):
-    search_text = request.POST.get('search')
-    qs = Patient.objects.filter(surname__icontains=search_text)
-    data = []
-    if len(qs) > 0 and len(search_text) > 0:
-        for i in qs:
-            item = {
-                "pk": i.pk,
-                "pin_no": i.pin_no,
-                "surname": i.surname,
-                "name": i.first_name,
-
-            }
-            data.append(item)
-        res = data
-        print(data)
-        for d in data:
-            print(d)
-            pin_no = d.get("pin_no")
-            surname = d.get('surname')
-            name = d.get('name')
-            full = f'{pin_no}  {surname} {name}'
-            html = ('<div class="card-body">'
-                    '<div class="list-group">'
-                    '<a href="#" class="list-group-item list-group-item-action">{}</a>'
-                    '</div>'
-
-                    ' </div> '
-
-                    ).format(full)
-    else:
-        res = "No patient not found ........"
-        html = ('<div class="card-body">'
-                '<div class="list-group">'
-                '<a href="#" class="list-group-item list-group-item-action">{}</a>'
-                '</div>'
-
-                ' </div> ').format(res)
-        return HttpResponse(html)
-    print("error")
-
-    return HttpResponse(html)
-    # return HttpResponse("noo000000000000000")

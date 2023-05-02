@@ -21,9 +21,16 @@
               <div class="form-row">
                 <div class="form-group col-md-12">
                     <label>Name</label>
-                    {% render_field form.name  type="text" class="form-control" value=data.type %}
-                
+                    {% render_field form.name type="text" class="form-control" value=data.type autocomplete="off" hx-post="/check_doctor/" hx-trigger="keyup" hx-target="#doctor-error" hx-swapp="outerhtml" %}
+                    <div id='doctor-error'>
+                     
+                    </div>
                 </div>
+                <div class="form-group col-md-12">
+                  <label>Specialist</label>
+                  {% render_field form.specialist type="text" class="form-control" value=data.type  autocomplete="off" %}
+               
+              </div>
                
              </div>
               <div class="form-row">

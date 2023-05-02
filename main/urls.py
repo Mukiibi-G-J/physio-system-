@@ -10,12 +10,8 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     # path('book-device/','views.book_device' , name='book-device'),
     path('ward-report/', views.ward_reports, name='ward-report'),
-    path('device-status/', views.device_status, name='device-status'),
     path('register/', views.register_user, name='register'),
     path('login/', views.login_user, name='login'),
-    path('add-device/', views.add_device, name='add-device'),
-    path('device-list/', views.device_list, name='device-list'),
-    path('add-cables/', views.add_cables, name='add-cables'),
     path('add-patient/', views.patient, name='add-patient'),
     path('add-ward/', views.add_ward, name='add-ward'),
     path('ward-table/', views.ward_table, name='ward-table'),
@@ -38,9 +34,9 @@ htmx_urlpatterns =[
     path('check_time/', views.check_time, name='check-time'),
     path('check_phone_2/', views.check_phone_2, name='check-phone-2'),
     path('current_date/', views.current_date, name='current-date'),
-    path('search-patient', views.searchPatient, name="search_patient"),
-    path('physio-session/search-patient/', views.search_patient, name="search-patient"),
-    path('check_department/', views.check_department, name='check-department')
+    path('check_ward/', views.check_ward, name="check-ward"),
+    path('check_doctor/', views.check_doctor, name='check-doctor'),
+    path('day_report/', views.day_report, name='day-report')
 ] 
 
 
