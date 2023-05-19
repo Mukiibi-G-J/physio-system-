@@ -4,7 +4,7 @@
 <div class="main-sidebar sidebar-style-2">
     <aside id="sidebar-wrapper">
       <div class="sidebar-brand">
-        <a href="{% url 'home' %}">  <span
+        <a href="{% url 'dashboard' %}">  <span
             class="logo-name">Physiotherapy System</span>
         </a>
       </div>
@@ -25,7 +25,7 @@
           <ul class="dropdown-menu">
             <li><a class="nav-link" href="{% url 'dashboard' %}">DashBoard</a></li>
             <li><a class="nav-link" href="{% url 'add-patient' %}">Therapy Report</a></li>
-            <li><a class="nav-link" href="{% url 'physio-session' %}">Physio session Report</a></li>
+            <li><a class="nav-link" href="">Physio session Report</a></li>
             <li><a class="nav-link" href="{% url 'ward-report' %}">Ward Reports</a></li>
           </ul>
         </li>
@@ -36,7 +36,12 @@
           <ul class="dropdown-menu">
             {% comment %} <li><a class="nav-link" href="{% url 'patient-table' %}">Patient Tables</a></li>
             <li><a class="nav-link" href="{% url 'add-patient' %}">New Patient</a></li> {% endcomment %}
-            <li><a class="nav-link" href="{% url 'physio-session' %}">Physio session</a></li>
+            <li><a class="nav-link" href="{% url 'patient-registration' %}">Patient Registration</a></li>
+            <li><a class="nav-link" href="{% url 'in-patient-registration' %}">In Patient Registration</a></li> 
+            <li><a class="nav-link" href="{% url 'back-date-registration' %}">Back Date Registration</a></li> 
+            <li><a class="nav-link" href="{% url 'physio-session' %}">Physio Session</a></li> 
+
+
             <li><a class="nav-link" href="{% url 'physio-session-table' %}">Physio Session Table</a></li>
           </ul>
         </li>

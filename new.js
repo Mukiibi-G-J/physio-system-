@@ -1,0 +1,25 @@
+{'pk': '', 
+'surname': 'Nabulya', 
+'firstname': 'Sarah', 
+'pin_no': 'P210040837', 
+'patient_type': 'OUT-PATIENT', 
+'receipt_no': 
+  [
+    {'receiptno_id': 'R23064393',
+     'visitno_id': 'P2100408370015', 
+     'quantity': 1, 
+     'unit_price': Decimal('30000.0000'), 
+     'amount': Decimal('30000.0000')}, 
+     {'receiptno_id': 'R23064394', 
+     'visitno_id': 'P2100408370016', 
+     'quantity': 2, 
+     'unit_price': Decimal('30000.0000'), 
+     'amount': Decimal('60000.0000')}, 
+     {'receiptno_id': 'R23064395', 
+     'visitno_id': 'P2100408370017', 
+     'quantity': 1, 
+     'unit_price': Decimal('30000.0000'), 
+     'amount': Decimal('30000.0000')}], 
+     'extra_billno': '',
+      'admission_no': ''
+    } 

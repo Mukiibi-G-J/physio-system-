@@ -49,18 +49,18 @@ from django.db import models
 #     class Meta:
         
 #         db_table = 'Logins'
-# class Lookupdata(models.Model):
-#     lookuporder = models.AutoField(db_column='LookupOrder')  # Field name made lowercase.
-#     dataid = models.CharField(db_column='DataID', primary_key=True, max_length=10)  # Field name made lowercase.
+class Lookupdata(models.Model):
+    # lookuporder = models.AutoField(db_column='LookupOrder')  # Field name made lowercase.
+    dataid = models.CharField(db_column='DataID', primary_key=True, max_length=10)  # Field name made lowercase.
 #     objectid = models.ForeignKey('Lookupobjects', models.DO_NOTHING, db_column='ObjectID')  # Field name made lowercase.
-#     datades = models.CharField(db_column='DataDes', max_length=100)  # Field name made lowercase.
+    datades = models.CharField(db_column='DataDes', max_length=100)  # Field name made lowercase.
 #     isdefault = models.CharField(db_column='IsDefault', max_length=1)  # Field name made lowercase.
 #     ishidden = models.CharField(db_column='IsHidden', max_length=1)  # Field name made lowercase.
 
-#     class Meta:
+    class Meta:
         
-#         db_table = 'LookupData'
-#         unique_together = (('objectid', 'datades'),)
+        db_table = 'LookupData'
+        # unique_together = (('objectid', 'datades'),)
 
 class Patients(models.Model):
     patientid = models.IntegerField(db_column='PatientID')  # Field name made lowercase.
@@ -70,7 +70,7 @@ class Patients(models.Model):
     lastname = models.CharField(db_column='LastName', max_length=20, blank=True, null=True)  # Field name made lowercase.
     middlename = models.CharField(db_column='MiddleName', max_length=20, blank=True, null=True)  # Field name made lowercase.
     birthdate = models.DateTimeField(db_column='BirthDate', blank=True, null=True)  # Field name made lowercase.
-    # genderid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='GenderID', blank=True, null=True)  # Field name made lowercase.
+    genderid = models.ForeignKey(Lookupdata, models.DO_NOTHING, db_column='GenderID', blank=True, null=True)  # Field name made lowercase.
     photo = models.BinaryField(db_column='Photo', blank=True, null=True)  # Field name made lowercase.
     fingerprint = models.BinaryField(db_column='Fingerprint', blank=True, null=True)  # Field name made lowercase.
     birthplace = models.CharField(db_column='BirthPlace', max_length=40, blank=True, null=True)  # Field name made lowercase.
@@ -311,7 +311,7 @@ class Admissions(models.Model):
     # bedno = models.ForeignKey('Beds', models.DO_NOTHING, db_column='BedNo', blank=True, null=True)  # Field name made lowercase.
     admissiondatetime = models.DateTimeField(db_column='AdmissionDateTime', blank=True, null=True)  # Field name made lowercase.
     admissionnotes = models.CharField(db_column='AdmissionNotes', max_length=2000, blank=True, null=True)  # Field name made lowercase.
-    # admissionstatusid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='AdmissionStatusID', blank=True, null=True)  # Field name made lowercase.
+    admissionstatusid = models.ForeignKey('Lookupdata', models.DO_NOTHING, db_column='AdmissionStatusID', blank=True, null=True)  # Field name made lowercase.
     # loginid = models.ForeignKey('Logins', models.DO_NOTHING, db_column='LoginID', blank=True, null=True)  # Field name made lowercase.
     clientmachine = models.CharField(db_column='ClientMachine', max_length=40, blank=True, null=True)  # Field name made lowercase.
     recorddatetime = models.DateTimeField(db_column='RecordDateTime', blank=True, null=True)  # Field name made lowercase.

@@ -1,21 +1,23 @@
 {% extends 'base.html' %} {% load widget_tweaks %} {% block auth %} 
 {% include '_partials/navbar.html' %} {% include 'dashboard.html' %} {% endblock auth %} 
-{% load static %} 
-{% block content %}
- 
+ {% block content %}
+ {% load static %}
+ {% block scripts %}
+ {% endblock scripts %}
+
 <div class="main-content">
   <div class="section-body">  
   <div class="form-group col-md-4" id="KAL">
-    <label>Search BY Name </label>
-    <form id="search-form" method="POST" action="{% url 'search' %}" autocomplete="off">
+    <label>Search By Patient No (format P220018880 ) </label>
+    <form id="search_form_inpatient" method="POST" action="{% url 'search' %}" autocomplete="off">
             {% csrf_token %}
        {% comment %} hx-post='{% url 'search-patient' %}' hx-target="#results"
       hx-trigger="keyup changed delay:500ms"  {% endcomment %}
       <div>
       <input
-        id="search_input"
+        id="search_input_inpatient"
         type="text"
-        name="game"
+        name="in_patient_no"
         placeholder="Search"
         class="p-3 form-control search"
       />
@@ -29,10 +31,10 @@
   
   </div>
 
-    <form method="POST" action={% url 'patient-registration' %}>
+    <form method="POST" action={% url 'in-patient-registration' %}>
       <div class="card">
         <div class="card-header">
-          <h4>Out Patient Registration</h4>
+          <h4>Pysio Session</h4>
         </div>
         
         
@@ -59,7 +61,7 @@
                 {% endcomment %}
               
                 <div class="form-row">
-                  <div class="card d-none" id="results-box">
+                  <div class="card d-none" id="results-box-inpatient">
                     <div class="card-body"></div>
                   </div>
                 </div>
@@ -67,7 +69,7 @@
                 <div class="form-row">
                   <div class="form-group col-md-2">
                     <label for="inputZip">Date</label>
-                    {% render_field form.date_of_visit type='date'   class="form-control" id="myDate"  readonly="readonly" %}
+                   {% render_field form.date_of_visit type='date'   class="form-control" %} 
                   </div>
                   <div class="form-group col-md-2" id="visit_no">
                    
@@ -95,63 +97,49 @@
                  
                  
             
-                      <div class "form-group col-md-2" id="pin_no">
-                  
-                      </div>
-                      
-                      <div class="form-group col-md-2" id="patient_surname">
-                      
-                      </div>
-                    
-                      <div class="form-group col-md-2" id="patient_name">
-                      
-                      </div>
-                    
-                      
-                      <div class "form-group col-md-2" id="patient_id">
-                  
-                      </div>
-
-                      <div class="form-group col-md-2" id="patient_type">
-                      </div> 
-                                  
-                </div>
-                <div class="form-row">
-
-                  <div class "form-group col-md-2" id="date_of_birth">
-              
+                  <div class "form-group col-md-2" id="pin_no">
+               
                   </div>
                   
-                  <div class="form-group col-md-2" id="phone">
+                  <div class="form-group col-md-2" id="patient_surname">
+                   
+                  </div>
+                 
+                  <div class="form-group col-md-2" id="patient_name">
+                   
+                  </div>
+                
                   
-                  </div>   
-                  <div class="form-group col-md-2" id="gender">
-                  
-                  </div>  
-                  <div class="form-group col-md-2" id="address">
-                  
+                  <div class "form-group col-md-2" id="patient_id">
+               
+                  </div>
+
+                  <div class="form-group col-md-2" id="patient_type">
                   </div> 
+                                  
                 </div>
+               
+               
               
                
                 <div class="form-row">
                   <div class="form-group col-md-2">
                     <label>Diagnosis</label>
-                    {% render_field form.diagnosis   class="form-control"  %}
+                    {% render_field form.diagnosis   class="form-control"  %} 
                   </div>                 
                   <div class="form-group col-md-2">
                       <label>Doctor</label>
-                      {% render_field form.doctor type="text" class="form-control" value=data.cables %}
+                      {% render_field form.doctor type="text" class="form-control" value=data.cables %} 
                   </div>
-                  {% comment %} <div class="form-group col-md-2">
+                   <div class="form-group col-md-2">
                     <label for="inputZip">Ward</label>
-                    {% render_field form.ward   class="form-control"  %}
-                  </div> {% endcomment %}
+                    {% render_field form.ward   class="form-control"  %} 
+                  </div>
                   
                   <div class="form-group col-md-2">
                     <label>More Notes</label>
                    
-                      {% render_field  form.more_notes  class="form-control"  %}
+                       {% render_field  form.more_notes  class="form-control"  %} 
                     
                     </div>
                  
@@ -176,10 +164,9 @@
         </form>
       </div>
 
+      {% endblock content %}
     </form>
   </div>
 </div>
-{% endblock content %}
-
 
 

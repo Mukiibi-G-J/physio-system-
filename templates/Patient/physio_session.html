@@ -13,7 +13,7 @@
       hx-trigger="keyup changed delay:500ms"  {% endcomment %}
       <div>
       <input
-        id="search_input"
+        id="search_input_physio_session"
         type="text"
         name="game"
         placeholder="Search"
@@ -29,10 +29,10 @@
   
   </div>
 
-    <form method="POST" action={% url 'patient-registration' %}>
+    <form method="POST" action={% url 'physio-session' %}>
       <div class="card">
         <div class="card-header">
-          <h4>Out Patient Registration</h4>
+          <h4>Daily Physio Session Registration</h4>
         </div>
         
         
@@ -59,7 +59,7 @@
                 {% endcomment %}
               
                 <div class="form-row">
-                  <div class="card d-none" id="results-box">
+                  <div class="card d-none" id="results-box-physio-session">
                     <div class="card-body"></div>
                   </div>
                 </div>
@@ -73,10 +73,7 @@
                    
                   </div>
                   <div class "form-group col-md-2" >
-                    <div class="d-flex flex-row" id="receipt_no">
                     
-
-                    </div>
                
                   </div>
                   <div class "form-group col-md-2" >
@@ -121,6 +118,10 @@
                   <div class "form-group col-md-2" id="date_of_birth">
               
                   </div>
+                  <div class="d-flex flex-row" id="diagnosis">
+                    
+
+                  </div>
                   
                   <div class="form-group col-md-2" id="phone">
                   
@@ -135,14 +136,14 @@
               
                
                 <div class="form-row">
-                  <div class="form-group col-md-2">
+                  {% comment %} <div class="form-group col-md-2">
                     <label>Diagnosis</label>
                     {% render_field form.diagnosis   class="form-control"  %}
                   </div>                 
                   <div class="form-group col-md-2">
                       <label>Doctor</label>
                       {% render_field form.doctor type="text" class="form-control" value=data.cables %}
-                  </div>
+                  </div> {% endcomment %}
                   {% comment %} <div class="form-group col-md-2">
                     <label for="inputZip">Ward</label>
                     {% render_field form.ward   class="form-control"  %}
@@ -154,19 +155,19 @@
                       {% render_field  form.more_notes  class="form-control"  %}
                     
                     </div>
-                 
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                          <label for="inputZip">Therapy</label>
+                          <div style="border:2px solid #ccc; width:300px; height: 300px; overflow-y: scroll;" class="form-control">
+                            {{ form.therapy   }} 
+                          
+                          </div>
+                          
+                        </div> 
+                      </div> 
                   
                 </div>
-                {% comment %} <div class="form-row">
-                  <div class="form-group col-md-2">
-                    <label for="inputZip">Therapy</label>
-                    <div style="border:2px solid #ccc; width:300px; height: 300px; overflow-y: scroll;" class="form-control">
-                      {{ form.therapy   }} 
-                    
-                    </div>
-                    
-                  </div> 
-                </div> {% endcomment %}
+              
               </div>
               <div class="card-footer">
                 <button class="btn btn-primary">Submit</button>

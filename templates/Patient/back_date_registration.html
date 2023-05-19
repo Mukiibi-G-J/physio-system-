@@ -1,38 +1,44 @@
 {% extends 'base.html' %} {% load widget_tweaks %} {% block auth %} 
 {% include '_partials/navbar.html' %} {% include 'dashboard.html' %} {% endblock auth %} 
-{% load static %} 
-{% block content %}
- 
+ {% block content %}
+ {% load static %}
 <div class="main-content">
   <div class="section-body">  
-  <div class="form-group col-md-4" id="KAL">
-    <label>Search BY Name </label>
-    <form id="search-form" method="POST" action="{% url 'search' %}" autocomplete="off">
+  <div class="form-group col-md-12" id="KAL">
+  
+    <form id="search-form" method="POST" action="{% url 'back_date_registration' %}" autocomplete="off">
             {% csrf_token %}
        {% comment %} hx-post='{% url 'search-patient' %}' hx-target="#results"
       hx-trigger="keyup changed delay:500ms"  {% endcomment %}
-      <div>
-      <input
-        id="search_input"
-        type="text"
-        name="game"
-        placeholder="Search"
-        class="p-3 form-control search"
-      />
+      
+     
+      <div class="d-flex" style="width:100%;">
+        <div>
+          <label for="inputZip">Date</label>
+          {% render_field form_back_date.date type='date'   class="form-control"  %}
+        </div>
+          <div class "form-group col-md-2" >
+              <label for="inputZip">Patient no</label>
+            {% render_field form_back_date.patient_no   class="form-control"  %}
+          </div>
+          
+          <div>
+            <label for="inputZip">Patient Type</label>
+          {% render_field form_back_date.patient_type   class="form-control"  %}
+          </div>
+          <div>
+            <button class="btn btn-primary mt-4 ml-2" >Submit</button>
+          </div>
+
       </div>
-      {% comment %} <input id="my_search_1" name="search"
-      placeholder="Search Patient......" type="text"
-      class="form-control" hx-post='{% url 'search_patient' %}'
-      hx-target="#results" hx-trigger="keyup changed delay:500ms"
-      > {% endcomment %}
     </form>
   
   </div>
-
-    <form method="POST" action={% url 'patient-registration' %}>
+    {% if res %}
+    <form method="POST" action={% url 'back-date-registration' %}>
       <div class="card">
         <div class="card-header">
-          <h4>Out Patient Registration</h4>
+          <h4>Pysio Session</h4>
         </div>
         
         
@@ -67,71 +73,95 @@
                 <div class="form-row">
                   <div class="form-group col-md-2">
                     <label for="inputZip">Date</label>
-                    {% render_field form.date_of_visit type='date'   class="form-control" id="myDate"  readonly="readonly" %}
+                    <input type="date"   class="form-control"  value={{res.visitdate }} readonly>
                   </div>
-                  <div class="form-group col-md-2" id="visit_no">
+                  <div class="form-group col-md-2" >
+                    <label for="inputZip">First Name</label>
+                    
+                    <input type="text"   class="form-control"  value={{res.firstname }} readonly>
+                   
+                  </div>
+                  <div class="form-group col-md-2" >
+                    <label for="inputZip">Surname Name</label>
+                    
+                    <input type="text"   class="form-control"  value={{res.surname }} readonly>
                    
                   </div>
                   <div class "form-group col-md-2" >
-                    <div class="d-flex flex-row" id="receipt_no">
+                    {% comment %} <div class="d-flex flex-row"> {% endcomment %}
+                      <label for="inputZip">Patient No</label>
                     
+                      <input type="text"   class="form-control"  value={{res.pin_no }} readonly>
 
-                    </div>
+                    {% comment %} </div> {% endcomment %}
                
                   </div>
-                  <div class "form-group col-md-2" >
-                    <div class="d-flex flex-row" id="multiple_input">
-                    
-
-                    </div>
-
-                  </div>
+                  
                   <div class "form-group col-md-2 " id="admission_no" style="margin-left: 5px;">
                
                   </div>
                   
                 </div> 
                 <div class="form-row">
-                 
+                  <div class "form-group col-md-2" >
+                    <div class="d-flex flex-row" id="multiple_input">
+                    {% for data in res.receipt_no  %}
+                    {% if data.receiptno_id %}
+                      <div style="margin-left: 5px;">
+                        <label for="inputZip">Receipt</label>
+                        
+                        <input type="text"   class="form-control"  value={{data.receiptno_id }} readonly>
+                      </div>
+                      {% elif data.invoiceno %}
+                      <div>
+                        <label for="inputZip">Invoice</label>
+                          
+                        <input type="text"   class="form-control"  value={{data.invoiceno }} readonly>
+                      </div>
+                      {% endif %}
+                    <div style="margin-left: 5px;">
+                        <label for="inputZip">Visitno no</label>
+                        
+                        <input type="text"   class="form-control"  value={{data.visitno_id }} readonly>
+                    </div>
+                    
+                    <div>
+
+                      <label for="inputZip">Quantity </label>
+                      
+                      <input type="text"   class="form-control"  value={{data.quantity }} readonly>
+                    </div>
+                    
+                    {% endfor %}
+
+                    </div>
+
+                  </div>
                  
             
-                      <div class "form-group col-md-2" id="pin_no">
-                  
-                      </div>
-                      
-                      <div class="form-group col-md-2" id="patient_surname">
-                      
-                      </div>
-                    
-                      <div class="form-group col-md-2" id="patient_name">
-                      
-                      </div>
-                    
-                      
-                      <div class "form-group col-md-2" id="patient_id">
-                  
-                      </div>
-
-                      <div class="form-group col-md-2" id="patient_type">
-                      </div> 
-                                  
-                </div>
-                <div class="form-row">
-
-                  <div class "form-group col-md-2" id="date_of_birth">
-              
+                  <div class "form-group col-md-2" id="pin_no">
+               
                   </div>
                   
-                  <div class="form-group col-md-2" id="phone">
+                  <div class="form-group col-md-2" id="patient_surname">
+                   
+                  </div>
+                 
+                  <div class="form-group col-md-2" id="patient_name">
+                   
+                  </div>
+                
                   
-                  </div>   
-                  <div class="form-group col-md-2" id="gender">
-                  
-                  </div>  
-                  <div class="form-group col-md-2" id="address">
-                  
+                  <div class "form-group col-md-2" id="patient_id">
+               
+                  </div>
+
+                  <div class="form-group col-md-2" id="patient_type">
                   </div> 
+                                  
                 </div>
+               
+               
               
                
                 <div class="form-row">
@@ -174,6 +204,8 @@
             </div>
           </div>
         </form>
+    {% endif %}
+
       </div>
 
     </form>
