@@ -1,91 +1,83 @@
-{% extends 'base.html' %} {% load widget_tweaks %} 
-{% block auth %} 
-{% include '_partials/navbar.html' %} 
-{% include 'dashboard.html' %} 
-{% endblock auth %} 
-{% load static %}
-
-
-
-
-{% block content %}
+{% extends 'base.html' %}
+ {% load widget_tweaks %} 
+ {% block auth %} {% include '_partials/navbar.html' %} 
+ {% include 'dashboard.html' %} 
+ {% endblock auth %} 
+ {% load static %} {% block content %}
 <div class="main-content">
-    <section class="section">
-        <ul class="breadcrumb breadcrumb-style ">
-          <li class="breadcrumb-item">
-            <h4 class="page-title m-b-0">Export Tables</h4>
-          </li>
-          <li class="breadcrumb-item">
-            <a href="index.html">
-              <i class="fas fa-home"></i></a>
-          </li>
-          <li class="breadcrumb-item">Tables</li>
-          <a href={% url "export_all_phsysioSessions" %}>
-           <li class="breadcrumb-item">Export Tables</li>
-          </a>
-        </ul>
-        <div class="section-body">
-       
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Table With State Save</h4>
-                </div>
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table table-striped table-hover" id="save-stage" style="width:100%;">
-                      <thead>
-                        <tr>
-                          <th>PIN NO</th>
-                          <th>Full Name</th>
-                          <th>Date</th>
-                          <th>Doctor</th>
-                          <th>Diagnosis</th>
-                          <th>Therapy</th>
-                          <th>Ward</th>
-                        <th>Physiotherapist</th>
-                        <th>Receipt No</th>
-                        </tr>
-                      </thead>
-                     <tbody>
-                      {% for p in physioSessions %}
-                       
-                       
-                       
-                      <tr>
-                        <td>{{ p.patient_no }}</td>
-                       <td>{{ p.full_name}}</td>
-                       <td>{{ p.date_of_visit}}</td>
-                       <td>{{ p.doctor }}</td>
-                       <td>{{ p.old_diagnosis }}</td>
-                       <td>{{ p.therapy }}</td>
-                       <td>{{ p.ward }}</td>
-                       <td>{{ p.therapist }}</td>
+  <div class="section-body">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4>Export Table</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table
+                class="table table-striped table-hover"
+                id="tableExport"
+                style="width: 100%"
+              >
+                <thead>
+                  <tr>
+                    <th>Date</th>
 
+                    <th>PIN NO</th>
+                    <th>ADMISSION NO</th>
+                    <th>PHYSIO SESSION NO</th>
+                    <th>Diagnosis</th>
+                    <th>Therapy</th>
+                    <th>Ward</th>
+                    <th>Patient Type</th>
+                    <th>Physiotherapist</th>
+                    <th> Action </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for p in physiosession %}
 
-                       <td>{{ p.receipt_no }}</td>
+                  <tr>
+                    <td>{{ p.created_at }}</td>
 
-                     </tr>
-                      
-                      
-                      {% endfor %}
-                      
-                     </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+                    <td style="cursor: pointer">
+                      {{ p.patient_no }}
+                    </td>
+                    <td>{{ p.admission_no }}</td>
+                    <td>{{ p.physiosession_no }}</td>
+
+                   
+                    <td>{{ p.diagnosis }}</td>
+                      <td>
+                          <ul>
+                              {% for t in  p.therapy %}
+                                  <li>{{ t }}</li>
+                              {% endfor %}
+                          </ul>
+                      </td>
+                 
+                    <td>{{ p.ward }}</td>
+                                                            
+                    <td>{{ p.patient_type}}</td>
+                    <td>{{ p.therapist }}</td>
+                    <td><a href="{% url 'patient_profile'  p.patient_no  %}" class="btn btn-primary">Detail</a></td>
+                    
+                  
+                  </tr>
+
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
 </div>
 
-{% endblock %}
-
-
-{% block scripts %}
+{% endblock %} {% block datatables %}
+<!-- Page Specific JS File -->
 <!-- Page Specific JS File -->
 <script src="{% static 'assets/bundles/datatables/datatables.min.js' %}"></script>
 <script src="{% static 'assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js' %}"></script>
@@ -96,5 +88,6 @@
 <script src="{% static 'assets/bundles/datatables/export-tables/vfs_fonts.js' %}"></script>
 <script src="{% static 'assets/bundles/datatables/export-tables/buttons.print.min.js' %}"></script>
 <script src="{% static 'assets/js/page/datatables.js' %}"></script>
+<!-- END Page Specific JS File -->
 
-{% endblock scripts %}
+{% endblock datatables %}

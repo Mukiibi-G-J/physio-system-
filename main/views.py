@@ -38,168 +38,168 @@ from .models import Patient
 
 
 def dashboard(request):
-    patients = Patient.objects.all().count()
-    ward = Ward.objects.all()
-    physio_sessions = PhysioSessionAdmission.objects.all().count()
-    inpatient = PhysioSessionAdmission.objects.filter(patient_type="IN PATIENT").count()
-    outpatient = PhysioSessionAdmission.objects.filter(
-        patient_type="OUT PATIENT"
-    ).count()
-    patient_month = PhysioSessionAdmission.objects.filter(
-        date__month=date.today().month
-    ).count()
-    patient_last_month = PhysioSessionAdmission.objects.filter(
-        date__month=date.today().month - 1
-    ).count()
-    patient_quarter = PhysioSessionAdmission.objects.filter(
-        date__month__in=[1, 2, 3]
-    ).count()
-    therapist = CustomUser.objects.filter(therapist=True)
-    patient_year = PhysioSessionAdmission.objects.filter(
-        date__year=date.today().year
-    ).count()
-    current_year = date.today().year
+    # patients = Patient.objects.all().count()
+    # ward = Ward.objects.all()
+    # physio_sessions = PhysioSessionAdmission.objects.all().count()
+    # inpatient = PhysioSessionAdmission.objects.filter(patient_type="IN PATIENT").count()
+    # outpatient = PhysioSessionAdmission.objects.filter(
+    #     patient_type="OUT PATIENT"
+    # ).count()
+    # patient_month = PhysioSessionAdmission.objects.filter(
+    #     date__month=date.today().month
+    # ).count()
+    # patient_last_month = PhysioSessionAdmission.objects.filter(
+    #     date__month=date.today().month - 1
+    # ).count()
+    # patient_quarter = PhysioSessionAdmission.objects.filter(
+    #     date__month__in=[1, 2, 3]
+    # ).count()
+    # therapist = CustomUser.objects.filter(therapist=True)
+    # patient_year = PhysioSessionAdmission.objects.filter(
+    #     date__year=date.today().year
+    # ).count()
+    # current_year = date.today().year
 
-    last_year = date.today().year - 1
-    current_month = date.today().month
-    last_month = date.today().month - 1
-    current_week = date.today().isocalendar()[1]
-    last_week = date.today().isocalendar()[1] - 1
+    # last_year = date.today().year - 1
+    # current_month = date.today().month
+    # last_month = date.today().month - 1
+    # current_week = date.today().isocalendar()[1]
+    # last_week = date.today().isocalendar()[1] - 1
 
-    jan_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[1], date_of_visit__year=date.today().year - 1
-    ).count()
-    feb_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[2], date_of_visit__year=date.today().year - 1
-    ).count()
-    mar_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[3], date_of_visit__year=date.today().year - 1
-    ).count()
-    apr_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[4], date_of_visit__year=date.today().year - 1
-    ).count()
-    may_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[5], date_of_visit__year=date.today().year - 1
-    ).count()
-    jun_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[6], date_of_visit__year=date.today().year - 1
-    ).count()
-    jul_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[7], date_of_visit__year=date.today().year - 1
-    ).count()
-    aug_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[8], date_of_visit__year=date.today().year - 1
-    ).count()
-    sep_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[9], date_of_visit__year=date.today().year - 1
-    ).count()
-    oct_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[10], date_of_visit__year=date.today().year - 1
-    ).count()
-    nov_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[11], date_of_visit__year=date.today().year - 1
-    ).count()
-    dec_last_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[12], date_of_visit__year=date.today().year - 1
-    ).count()
-    physio_session_last_year = [
-        jan_last_year,
-        feb_last_year,
-        mar_last_year,
-        apr_last_year,
-        may_last_year,
-        jun_last_year,
-        jul_last_year,
-        aug_last_year,
-        sep_last_year,
-        oct_last_year,
-        nov_last_year,
-        dec_last_year,
-    ]
+    # jan_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[1], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # feb_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[2], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # mar_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[3], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # apr_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[4], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # may_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[5], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # jun_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[6], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # jul_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[7], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # aug_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[8], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # sep_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[9], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # oct_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[10], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # nov_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[11], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # dec_last_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[12], date_of_visit__year=date.today().year - 1
+    # ).count()
+    # physio_session_last_year = [
+    #     jan_last_year,
+    #     feb_last_year,
+    #     mar_last_year,
+    #     apr_last_year,
+    #     may_last_year,
+    #     jun_last_year,
+    #     jul_last_year,
+    #     aug_last_year,
+    #     sep_last_year,
+    #     oct_last_year,
+    #     nov_last_year,
+    #     dec_last_year,
+    # ]
 
-    # jan = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[1]).count()
-    # feb = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[2]).count()
-    # mar = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[3]).count()
-    # apr = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[4]).count()
-    # may = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[5]).count()
-    # jun = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[6]).count()
-    # jul = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[7]).count()
-    # aug = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[8]).count()
-    # sep = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[9]).count()
-    # oct = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[10]).count()
-    # nov = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[11]).count()
-    # dec = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[12]).count()
-    jan_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[1], date_of_visit__year=date.today().year
-    ).count()
-    feb_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[2], date_of_visit__year=date.today().year
-    ).count()
-    mar_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[3], date_of_visit__year=date.today().year
-    ).count()
-    apr_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[4], date_of_visit__year=date.today().year
-    ).count()
-    may_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[5], date_of_visit__year=date.today().year
-    ).count()
-    jun_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[6], date_of_visit__year=date.today().year
-    ).count()
-    jul_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[7], date_of_visit__year=date.today().year
-    ).count()
-    aug_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[8], date_of_visit__year=date.today().year
-    ).count()
-    sep_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[9], date_of_visit__year=date.today().year
-    ).count()
-    oct_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[10], date_of_visit__year=date.today().year
-    ).count()
-    nov_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[11], date_of_visit__year=date.today().year
-    ).count()
-    dec_current_year = PhysioSessionAdmission.objects.filter(
-        date_of_visit__month__in=[12], date_of_visit__year=date.today().year
-    ).count()
+    # # jan = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[1]).count()
+    # # feb = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[2]).count()
+    # # mar = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[3]).count()
+    # # apr = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[4]).count()
+    # # may = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[5]).count()
+    # # jun = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[6]).count()
+    # # jul = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[7]).count()
+    # # aug = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[8]).count()
+    # # sep = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[9]).count()
+    # # oct = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[10]).count()
+    # # nov = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[11]).count()
+    # # dec = PhysioSessionAdmission.objects.filter(date_of_visit__month__in=[12]).count()
+    # jan_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[1], date_of_visit__year=date.today().year
+    # ).count()
+    # feb_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[2], date_of_visit__year=date.today().year
+    # ).count()
+    # mar_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[3], date_of_visit__year=date.today().year
+    # ).count()
+    # apr_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[4], date_of_visit__year=date.today().year
+    # ).count()
+    # may_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[5], date_of_visit__year=date.today().year
+    # ).count()
+    # jun_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[6], date_of_visit__year=date.today().year
+    # ).count()
+    # jul_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[7], date_of_visit__year=date.today().year
+    # ).count()
+    # aug_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[8], date_of_visit__year=date.today().year
+    # ).count()
+    # sep_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[9], date_of_visit__year=date.today().year
+    # ).count()
+    # oct_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[10], date_of_visit__year=date.today().year
+    # ).count()
+    # nov_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[11], date_of_visit__year=date.today().year
+    # ).count()
+    # dec_current_year = PhysioSessionAdmission.objects.filter(
+    #     date_of_visit__month__in=[12], date_of_visit__year=date.today().year
+    # ).count()
 
-    physio_session_current_year = [
-        jan_current_year,
-        feb_current_year,
-        mar_current_year,
-        apr_current_year,
-        may_current_year,
-        jun_current_year,
-        jul_current_year,
-        aug_current_year,
-        sep_current_year,
-        oct_current_year,
-        nov_current_year,
-        dec_current_year,
-    ]
-    print(physio_session_current_year)
-    patient_last_year = PhysioSessionAdmission.objects.filter(
-        date__year=date.today().year - 1
-    )
-    print(patient_month, patient_last_month, patient_quarter)
+    # physio_session_current_year = [
+    #     jan_current_year,
+    #     feb_current_year,
+    #     mar_current_year,
+    #     apr_current_year,
+    #     may_current_year,
+    #     jun_current_year,
+    #     jul_current_year,
+    #     aug_current_year,
+    #     sep_current_year,
+    #     oct_current_year,
+    #     nov_current_year,
+    #     dec_current_year,
+    # ]
+    # print(physio_session_current_year)
+    # patient_last_year = PhysioSessionAdmission.objects.filter(
+    #     date__year=date.today().year - 1
+    # )
+    # print(patient_month, patient_last_month, patient_quarter)
 
-    context = {
-        "ward": ward,
-        "therapist": therapist,
-        "current_year": current_year,
-        "last_year": last_year,
-        "patients": patients,
-        "inpatient": inpatient,
-        "outpatient": outpatient,
-        "physio_sessions": physio_sessions,
-        "physio_session_current_year": physio_session_current_year,
-        "physio_session_last_year": physio_session_last_year,
-    }
+    # context = {
+    #     "ward": ward,
+    #     "therapist": therapist,
+    #     "current_year": current_year,
+    #     "last_year": last_year,
+    #     "patients": patients,
+    #     "inpatient": inpatient,
+    #     "outpatient": outpatient,
+    #     "physio_sessions": physio_sessions,
+    #     "physio_session_current_year": physio_session_current_year,
+    #     "physio_session_last_year": physio_session_last_year,
+    # }
 
-    return render(request, "Dashboard/dashboard.html", context)
+    return render(request, "Dashboard/dashboard.html", context={})
 
 
 def day_report(request):
@@ -516,7 +516,7 @@ def patient_registration(request):
             )
 
         messages.add_message(
-            request, messages.SUCCESS, "Physio Session booked successfully"
+            request, messages.SUCCESS, "Patient Registered successfully"
         )
         return redirect("patient-registration")
     # if request.method == "GET":
@@ -562,11 +562,61 @@ def patient_registration(request):
 
 
 def inpatient_registration(request):
-    PhysioSessionAdmissionForm = PhysioSessionAdmissionForm()
+    physioSessionAdmissionForm = PhysioSessionAdmissionForm()
+    if request.method == "POST":
+        data = request.POST
+        patient_name = data["patient_name"]
+        patient_surname = data["patient_surname"]
+        patient_pin = data["patient_pin"]
+        date_of_visit = data["date_of_visit"]
+        admission_no = data["admission_no"]
+        patient_type = data["patient_type"]
+        more_notes = data["more_notes"]
+        address = data["address"]
+        phone = data["phone"]
+        date_of_birth = str(request.POST.get("date_of_birth")).split("T")[0]
+        gender = data["gender"]
+
+        diagnosis = Diagnosis.objects.get(id=data["diagnosis"])
+        doctor = Doctor.objects.get(id=data["doctor"])
+        ward = Ward.objects.get(id=data["ward"])
+        print(request.POST)
+        if Patient.objects.filter(patient_no=patient_pin).exists():
+            patient = Patient.objects.get(patient_no=patient_pin).patient_no
+            messages.add_message(
+                request, messages.ERROR, "Patient is all ready regisetered"
+            )
+
+            return redirect("patient_profile", pk=patient)
+        patient = Patient.objects.create(
+            gender=gender,
+            address=address,
+            date_of_birth=date_of_birth,
+            phone_number=phone,
+            surname=patient_surname,
+            first_name=patient_name,
+            patient_no=patient_pin,
+        )
+
+        physiosessionadmission = PhysioSessionAdmission.objects.create(
+            therapist=request.user,
+            doctor=doctor,
+            date_of_visit=date_of_visit,
+            diagnosis=diagnosis,
+            more_notes=more_notes,
+            ward=ward,
+            clinic_master_admission_no=admission_no,
+            patient_type=patient_type,
+            patient=patient,
+        )
+
+        messages.add_message(
+            request, messages.SUCCESS, "Patient Registered successfully"
+        )
     return render(
         request,
         "Patient/in_patient_registration.html",
-        {"form": PhysioSessionAdmissionForm},
+        {"form": physioSessionAdmissionForm},
     )
 
 
@@ -744,6 +794,10 @@ def get_in_patient(request, pk):
             "surname": p.lastname,
             "firstname": p.firstname,
             "pin_no": p.patientno,
+            "date_of_birth": p.birthdate,
+            "phone": p.phone,
+            "gender": p.genderid.datades,
+            "address": p.address,
             "visit_no": [],
             "patient_type": "",
             "receipt_no": [],
@@ -1106,34 +1160,150 @@ def patient_profile(request, pk):
         "patient": p,
         "date_string": date_string,
     }
-    data = {"admission_no": "", "payement_info": []}
+    data = {
+        "admission_no": "",
+        "payement_info": [],
+        "physiosession_attended": [],
+        "number_of_session_left": "",
+    }
+    # for admission in physio_admission:
+    #     physiso = PhysioSession.objects.filter(admission_no=admission)
+    #     print(physiso)
+    #     for p in physiso:
 
     for admission in physio_admission:
         admissions_no = admission.admission_no
-        print(admissions_no)
+
         receipt_admission = admission.receipt_physiosessionadmission.all()
         data["admission_no"] = admissions_no
-        for receipt in receipt_admission:
-            receipt_number = receipt.receipt_number
-            quantity_of_session = receipt.quantity_of_session
-            payment_date = receipt.payment_date
-            my_dic = {
-                "receipt_number": receipt_number,
-                "quantity_of_session": quantity_of_session,
-                "payment_date": payment_date,
-            }
-            data["payement_info"].append(my_dic)
+        physisosession_attended = (
+            PhysioSession.objects.filter(admission_no=admission)
+            .order_by("-created_at")
+            .filter(admission_no__discharge=False)
+        )
+        if physisosession_attended:
+            count_of_attended = physisosession_attended.count()
+            count_of_quantity_paid = sum(
+                receipt.quantity_of_session for receipt in receipt_admission
+            )
+
+            number_of_session_left = int(count_of_quantity_paid) - int(
+                count_of_attended
+            )
+            data["number_of_session_left"] = number_of_session_left
+            data["physiosession_attended"].append(physisosession_attended)
+            for receipt in receipt_admission:
+                receipt_number = receipt.receipt_number
+                quantity_of_session = receipt.quantity_of_session
+                payment_date = receipt.payment_date
+                my_dic = {
+                    "receipt_number": receipt_number,
+                    "quantity_of_session": quantity_of_session,
+                    "payment_date": payment_date,
+                }
+                data["payement_info"].append(my_dic)
             context["physiosession_admin"].append(data)
+        else:
+            context["physiosession_admin"] = [""]
+            
 
     print(context)
+    if request.method == "POST":
+        print(request.POST)
+        data = request.POST
+        date = data.get("data", None)
+        receipt = data.get("receipt", None)
+        admission_no = data.get("admission_no", None)
+        print(admission_no, date, receipt)
+
+        if receipt:
+            if Receipt.objects.filter(receipt_number=receipt).exists():
+                messages.add_message(
+                    request, messages.ERROR, f"Receipt NO is allready registerd"
+                )
+                return render(request, "patient/patient_profile.html", context)
+
+            payement_detail = get_object_or_404(Paymentdetails, receiptno=receipt)
+
+            visit_no = payement_detail.visitno.visitno
+            print(visit_no)
+            if payement_detail.visitno.paydate.strftime("%Y-%m-%d") == date:
+                quantity_of_session_payed = payement_detail.quantity
+                print(quantity_of_session_payed)
+                physiosession_admission = PhysioSessionAdmission.objects.get(
+                    patient__patient_no=pk
+                )
+                new_quantity_of_sessions = int(
+                    physiosession_admission.quantity_of_sessions
+                ) + int(quantity_of_session_payed)
+
+                print(new_quantity_of_sessions)
+
+                receipt_obj = Receipt.objects.create(
+                    physiosessionadmission=physiosession_admission,
+                    receipt_number=receipt,
+                    visit_no=visit_no,
+                    payment_date=date,
+                    quantity_of_session=quantity_of_session_payed,
+                )
+
+                # receipt_obj.save()
+                physiosession_admission.quantity_of_sessions = new_quantity_of_sessions
+                physiosession_admission.save()
+
+                messages.add_message(request, messages.SUCCESS, f"Updated Successfully")
+                return render(request, "patient/patient_profile.html", context)
+
+            else:
+                messages.add_message(
+                    request, messages.ERROR, f"Please Select the right date"
+                )
+                return render(request, "patient/patient_profile.html", context)
+        elif admission_no:
+            admission_no = PhysioSessionAdmission.objects.get(admission_no=admission_no)
+            patient = (
+                admission_no.patient.surname + " " + admission_no.patient.first_name
+            )
+            admission_no.discharge = True
+            admission_no.save()
+            print(patient)
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                f"Addmission for {patient} has been Closed Successfully",
+            )
+            print(admission_no)
 
     return render(request, "patient/patient_profile.html", context)
 
 
+def get_patient_admission_no(request, pk):
+    # if request.method == "POST":
+    p = Patient.objects.get(patient_no=pk).pk
+    p = get_object_or_404(Patient, pk=p)
+    physio_admission = p.patient_physio_admission.all()
+
+    for admission_no_obj in physio_admission:
+        admission_no = admission_no_obj.admission_no
+        physio_session_admission_no = PhysioSessionAdmission.objects.filter(
+            admission_no=admission_no
+        ).filter(discharge=False)
+
+        if physio_session_admission_no:
+            break
+    physio_admission_no = physio_session_admission_no[0].admission_no
+
+    # break
+    # if physio_admission_no:
+    return JsonResponse({"physio_admission_no": f"{physio_admission_no}"})
+
+
 def update_patient_payement(request, pk):
     if request.method == "POST":
-        print(request.POST)
-        messages.add_message(request, messages.SUCCESS, f"Paymen ")
+        patient = get_object_or_404(Patient, pk=pk)
+        patient_no = patient.patient_no
+
+        messages.add_message(request, messages.SUCCESS, f"Payment")
     return render(request, "patient/patient_profile.html")
 
 
@@ -1147,6 +1317,16 @@ def physio_session(request):
         print(request.POST)
 
         data = request.POST
+        if data.get("patient_pin", None) == None:
+            messages.add_message(
+                request, messages.ERROR, "Please first search for patientd"
+            )
+            return render(
+                request,
+                "Patient/physio_session.html",
+                {"form": physioSessionAdmissionForm},
+            )
+
         patient_pin = data["patient_pin"]
         more_notes = data["more_notes"]
         therapies = data.getlist("therapy")
@@ -1244,12 +1424,32 @@ def get_patient_physio(request, pk):
 
 
 def physio_session_table(request):
-    PhysioSessionAdmission = PhysioSessionAdmission.objects.all().order_by("-id")[0:100]
+    physiosession = (
+        PhysioSession.objects.all().order_by("-id").select_related("admission_no")
+    )
+    print(physiosession)
+    physio_session_list = []
+    for p in physiosession:
+        data = {
+            "admission_no": p.admission_no.admission_no,
+            "patient_no": p.admission_no.patient.patient_no,
+            "physiosession_no": p.physiosession_no,
+            "diagnosis": p.admission_no.diagnosis,
+            "therapy": p.therapy.all(),
+            "patient_type": p.admission_no.patient_type,
+            "therapist": p.therapist,
+            "ward": p.admission_no.ward,
+            "created_at": p.created_at,
+        }
 
+        if str(str(data["ward"]).capitalize()) == "None":
+            data["ward"] = "Out patient donot have wards"
+        physio_session_list.append(data)
+        print(data)
     return render(
         request,
         "Patient/physio_session_table.html",
-        {"PhysioSessionAdmissions": PhysioSessionAdmission},
+        {"physiosession": physio_session_list},
     )
 
 
@@ -1524,3 +1724,11 @@ def export_all_phsysioSessions(request):
 
     wb.save(response)
     return response
+
+
+# ? 404 error
+
+
+def page_not_found(request, exception):
+    # Additional logic or data retrieval if needed
+    return render(request, "_partials/404.html")

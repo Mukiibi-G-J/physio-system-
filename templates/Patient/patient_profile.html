@@ -160,7 +160,14 @@
 
                                 <div class="card-body">
                                     {% for admission in physiosession_admin %}
-                                    <div class="section-title mt-0">{{ admission.admission_no }}</div>
+                                   
+                    
+                                    <div class=" d-flex justify-content-between section-title mt-0">
+                                      <p>{{ admission.admission_no }} </p>
+                                     <button onclick="get_patient_admission_id('{{ patient.patient_no }}')" type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal_1" > Close Addmission</button>
+
+                          
+                                      </div>
                                     <table class="table table-bordered">
                                     <thead>
                                         <tr>
@@ -187,6 +194,47 @@
                                 {% endfor %}
 
                             </div>
+                            <div>
+                              <hr style="border: 2px solid black; margin: 10px 0;">
+                                  <div class="card-header">
+                                      <h4>Physio Session Attended</h4>
+                                  </div>
+                                 
+  
+                                  <div class="card-body">
+                                      {% for admission in physiosession_admin %}
+                                      <div class="section-title mt-0">{{ admission.admission_no }}</div>
+                                      <table class="table table-bordered">
+                                      <thead>
+                                          <tr>
+                                              <th scope="col">#</th>
+                                              <th scope="col">Physio Session No</th>
+                                              <th scope="col">Quantity</th>
+                                              <th scope="col">Date </th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                              {% for physiosession in admission.physiosession_attended %}
+                                                {% for p in physiosession %}
+                                              <tr>
+                                              <th scope="row">{{ forloop.counter }}</th>
+                                              <td>{{ p.physiosession_no }}</td>
+                                              <td>{{ p.therapist }}</td> 
+                                              <td>{{ p.created_at }}</td> 
+                                              </tr>
+                                               {% endfor %}
+                                               <h5><strong>Total Number of Sessions Attended</strong>: {{ physiosession|length }}</h5>
+                                               <h5><strong>Total Number of Sessions Left</strong>: {{ admission.number_of_session_left }}</h5>
+                                               
+                                              {% endfor %}
+                                       
+                                          
+                                      </tbody>
+                                      </table>
+                                  </div>
+                                  {% endfor %}
+  
+                              </div>
 
                     </div>
                     {% comment %} <div class="section-title">Education</div>
@@ -375,7 +423,7 @@
         </div>
       </div>
   <!-- Modal with form -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -386,7 +434,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="">
+        <form class="" method="POST" >
+          {% csrf_token %}
           <div class="form-group">
             <label>Date of payement</label>
             <div class="input-group">
@@ -400,7 +449,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Patient No</label>
+            <label>Reciept  No  (format "R23064414")</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <div class="input-group-text">
@@ -408,17 +457,57 @@
                   <i class="fas fa-font"></i>
                 </div>
               </div>
-              <input type="text" class="form-control" placeholder="Patient no" name="password">
+              <input type="text" class="form-control" placeholder="Receipt no" name="receipt">
             </div>
           </div>
     
-          <button type="button" class="btn btn-primary m-t-15 waves-effect">LOGIN</button>
+          <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>
         </form>
       </div>
     </div>
   </div>
 </div>
-  
+     <!-- Modal with form -->
+     <div class="modal fade" id="exampleModal_1" tabindex="-1" role="dialog" aria-labelledby="formModal"
+     aria-hidden="true">
+       <div class="modal-dialog" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h5 class="modal-title" id="formModal">Close Admission</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+             </button>
+
+           </div>
+           <div class="modal-body">
+             <form class="" method="POST" >
+               {% csrf_token %}
+               <div class="form-group" >
+                 <label>Close Admission</label>
+                 <div class="input-group">
+                   <div class="input-group-prepend">
+                     <div class="input-group-text">
+                     <i class="fas fa-caret-right"></i>
+
+                     </div>
+                   </div>
+       
+                   <input type="text" class="form-control" id="patient_admission_no" name="admission_no"  >
+                 </div>
+               </div>
+           
+              <div class="d-flex">
+                <p style="color:red;"><b>  ARE YOU SURE YOU WANT TO CLOSE THIS ADMISSION</b></p>
+                <button type="submit" class="btn btn-danger m-t-15 waves-effect">CLOSE ADMISSION</button>
+
+              </div>
+             </form>
+           </div>
+         </div>
+       </div>
+     </div>
+     {% comment %} close modal {% endcomment %}
+
  
 </div>
 {% endblock content %}

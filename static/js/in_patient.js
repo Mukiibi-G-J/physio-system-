@@ -7,9 +7,12 @@ const patient_surname_inpatient = document.getElementById("patient_surname");
 const PIN_IN_PATIENT = document.getElementById("pin_no");
 const receipt_no_in_patient = document.getElementById("receipt_no");
 const patient_type_in_patient = document.getElementById("patient_type");
+const date_of_birth_in_patient = document.getElementById("date_of_birth");
+const phone_in_patient = document.getElementById("phone");
+const address_in_patient = document.getElementById("address");
+const gender_in_patient = document.getElementById("gender");
 
 const multiple_input_inpatient = document.getElementById("multiple_input");
-
 
 function myFunction_inpatient(id) {
   resultsBoxInpatient.classList.add("d-none");
@@ -19,7 +22,7 @@ function myFunction_inpatient(id) {
     type: "get",
     url: `get_in_patient/${id}`,
     success: (response) => {
-        console.log(response.data.admission_no);
+      console.log(response.data.admission_no);
       //   console.log(response.data.visit_no);
       patient_surname_inpatient.innerHTML = `
             <label>Surname</label>
@@ -46,6 +49,22 @@ function myFunction_inpatient(id) {
 
                 <label>Patient Type</label> 
                 <input type="text" class="form-control" name="patient_type" value=${response.data.patient_type} readonly />
+                `;
+        phone_in_patient.innerHTML = `
+                <label>phone no</label>
+                <input type="text" class="form-control" name="phone" value=${response.data.phone} readonly id="phone" />
+                `;
+        gender_in_patient.innerHTML = `
+                <label>Gender</label>
+                <input type="text" class="form-control" name="gender" value=${response.data.gender} readonly id="gender" />
+                `;
+        date_of_birth_in_patient.innerHTML = `
+                <label>Date of Birth</label>
+                <input type="text" class="form-control" name="date_of_birth" value=${response.data.date_of_birth} readonly id="date_of_birth" />
+                `;
+        address_in_patient.innerHTML = `
+                 <label>Address</label>
+                <input type="text" class="form-control" name="address" value=${response.data.address} readonly id="address" />
                 `;
         // admission_no.innerHTML = `
         //         <label>Admission no</label>

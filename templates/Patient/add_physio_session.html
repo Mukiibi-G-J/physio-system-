@@ -6,7 +6,7 @@
 <div class="main-content">
   <div class="section-body">  
   <div class="form-group col-md-4" id="KAL">
-    <label>Search BY Name </label>
+    <label>Search By Patient No (format P220018880 )</label>
     <form id="search-form" method="POST" action="{% url 'search' %}" autocomplete="off">
             {% csrf_token %}
        {% comment %} hx-post='{% url 'search-patient' %}' hx-target="#results"

@@ -21,6 +21,10 @@
  <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
  <link rel='shortcut icon' type='image/x-icon' href="{% static 'assets/img/favicon.ico' %}"/>
  <link rel="stylesheet" href="{% static 'assets/bundles/izitoast/css/iziToast.min.css' %}">
+ <link rel="stylesheet" href="{% static 'assets/bundles/datatables/datatables.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css' %}">
+
+
  <script
  src="https://code.jquery.com/jquery-3.6.1.js"
  integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
@@ -32,8 +36,9 @@
 
   <script src="{% static 'js/htmx.min.js' %}"></script>
   <script src={% static 'js/index.js' %}></script>
+  <script src={% static 'js/patient_profile.js' %}></script>
 <sytle>
-  my_container12 {
+  .my_container12 {
     border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll;
   }
   </style>
@@ -63,24 +68,7 @@
     {% block chart_1 %}{% endblock chart_1 %}
     <script src="{% static 'assets/bundles/izitoast/js/iziToast.min.js' %}"></script>
 
-    {% comment %} <script type=text/javascript>
-      function my() {
-        iziToast.warning({
-            title: 'Hello, world!',
-            message: 'This awesome plugin is made by iziToast',
-            position: 'topRight'
-        });
-      }
-    </script>
-
-    <script type=text/javascript>
-     console.log("it works")
-      iziToast.warning({
-          title: 'Hello, world!',
-          message: 'This awesome plugin is made by iziToast',
-          position: 'topRight'
-      });
-  </script> {% endcomment %}
+  
 
    <!-- General JS Scripts -->
   <script src="{% static 'assets/js/app.min.js' %}"></script>
@@ -95,6 +83,8 @@
   <script src="{% static 'assets/js/scripts.js' %}"></script>
   <!-- Custom JS File -->
   <script src="{% static 'assets/js/custom.js' %}"></script>
+
+  
   <script>
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
@@ -102,6 +92,8 @@
         "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
   </script>
+  {% block datatables %}{% endblock datatables %}
+
    
     {% for message in messages %}
         {% if message.tags == 'success'%}

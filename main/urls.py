@@ -21,13 +21,24 @@ urlpatterns = [
         name="get-in-patient",
     ),
     path("patient_profile/<str:pk>", views.patient_profile, name="patient_profile"),
-    
+    path("get_patient_admission_no/<str:pk>", views.get_patient_admission_no),
+    path("patient_table/", views.patient_table, name="patient-table"),
+
+    # path(
+    #     "update_patient_payement/<str:pk>",
+    #     views.update_patient_payement,
+    #     name="update_patient_payement",
+    # ),
+    # ? --------------------------------- physios ---------------------------------------
     path("physio-session/get_patient_physio/<int:pk>", views.get_patient_physio),
     path("physio-session/", views.physio_session, name="physio-session"),
-    path("physio-session/search/", views.physio_session_search, name="physio-session-search"),
-    
+    path(
+        "physio-session/search/",
+        views.physio_session_search,
+        name="physio-session-search",
+    ),
     path("logout/", views.logout_user, name="logout"),
-    path("dashboard/", views.dashboard, name="dashboard"),
+    path("", views.dashboard, name="dashboard"),
     # path('book-device/','views.book_device' , name='book-device'),
     path("ward-report/", views.ward_reports, name="ward-report"),
     path("register/", views.register_user, name="register"),

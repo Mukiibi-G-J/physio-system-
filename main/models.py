@@ -77,7 +77,7 @@ class Patient(models.Model):
 
 
 class PhysioSessionAdmission(models.Model):
-    admission_no = models.CharField(max_length=10)
+    admission_no = models.CharField(max_length=255)
     therapist = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
     patient = models.ForeignKey(
         Patient, on_delete=models.PROTECT, related_name="patient_physio_admission"
@@ -92,7 +92,7 @@ class PhysioSessionAdmission(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     more_notes = models.TextField()
     patient_type = models.CharField(max_length=255)
-
+    clinic_master_admission_no = models.CharField(max_length=255, blank=True, null=True)
     quantity_of_sessions = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
@@ -110,7 +110,7 @@ class PhysioSessionAdmission(models.Model):
                 )
                 # print(self.admission_no)
             else:
-                self.admission_no = f"{self.patient.patient_no}-PH0001"
+                self.admission_no = f"{self.patient.patient_no}-PHA0001"
                 print(self.admission_no)
         super().save(*args, **kwargs)
 
