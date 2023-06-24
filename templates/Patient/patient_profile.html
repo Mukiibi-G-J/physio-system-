@@ -69,45 +69,7 @@
                   </div>
                 </div>
               </div>
-              {% comment %} <div class="card">
-                <div class="card-header">
-                  <h4>Skills</h4>
-                </div>
-                <div class="card-body">
-                  <ul class="list-unstyled user-progress list-unstyled-border list-unstyled-noborder">
-                    <li class="media">
-                      <div class="media-body">
-                        <div class="media-title">Java</div>
-                      </div>
-                      <div class="media-progressbar p-t-10">
-                        <div class="progress" data-height="6">
-                          <div class="progress-bar bg-primary" data-width="70%"></div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="media">
-                      <div class="media-body">
-                        <div class="media-title">Web Design</div>
-                      </div>
-                      <div class="media-progressbar p-t-10">
-                        <div class="progress" data-height="6">
-                          <div class="progress-bar bg-warning" data-width="80%"></div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="media">
-                      <div class="media-body">
-                        <div class="media-title">Photoshop</div>
-                      </div>
-                      <div class="media-progressbar p-t-10">
-                        <div class="progress" data-height="6">
-                          <div class="progress-bar bg-green" data-width="48%"></div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div> {% endcomment %}
+             
             </div>
             <div class="col-12 col-md-12 col-lg-8">
               <div class="card">
@@ -115,11 +77,11 @@
                   <ul class="nav nav-tabs" id="myTab2" role="tablist">
                     <li class="nav-item">
                       <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#about" role="tab"
-                        aria-selected="true">About</a>
+                        aria-selected="true">CURRENT ADMISSION</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#settings" role="tab"
-                        aria-selected="false">Setting</a>
+                        aria-selected="false">CLOSED ADMISSIONS</a>
                     </li>
                   </ul>
                   <div class="tab-content tab-bordered" id="myTab3Content">
@@ -135,11 +97,6 @@
                           <br>
                           <p class="text-muted">{{ patient.phone_number }}</p>
                         </div>
-                        {% comment %} <div class="col-md-3 col-6 b-r">
-                          <strong>Email</strong>
-                          <br>
-                          <p class="text-muted">johndeo@example.com</p>
-                        </div> {% endcomment %}
                         <div class="col-md-3 col-6">
                           <strong>Location</strong>
                           <br>
@@ -148,27 +105,115 @@
                       </div>
                      
                          
+                        {% if closed_admission_physiosession_admin %}
+                          <h5><strong> {{ patient.get_full_name }} DOES NOT HAVE ANY ADDMISSIONS CURRENTLY</strong></h5>
                         
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add New payment detials</button>
+                        {% else %}
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add New payment detials</button>
                          
-                          <div>
+                        <div>
                             <hr style="border: 2px solid black; margin: 10px 0;">
                                 <div class="card-header">
                                     <h4>Payment</h4>
                                 </div>
-                               
+                                
 
                                 <div class="card-body">
-                                    {% for admission in physiosession_admin %}
-                                   
-                    
+                                      {% for admission in physiosession_admin %}
+                                      
+                      
                                     <div class=" d-flex justify-content-between section-title mt-0">
-                                      <p>{{ admission.admission_no }} </p>
-                                     <button onclick="get_patient_admission_id('{{ patient.patient_no }}')" type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal_1" > Close Addmission</button>
+                                        <p>{{ admission.admission_no }} </p>
+                                        <button onclick="get_patient_admission_id('{{ patient.patient_no }}')" type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal_1" > Close Addmission</button>
 
-                          
-                                      </div>
-                                    <table class="table table-bordered">
+                            
+                                    </div>
+                                      <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Receipt</th>
+                                                <th scope="col">Quantity</th>
+                                                <th scope="col">Date of payment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                {% for receipt in admission.payement_info %}
+                                                <tr>
+                                                <th scope="row">{{ forloop.counter }}</th>
+                                                <td>{{ receipt.receipt_number }}</td>
+                                                <td>{{ receipt.quantity_of_session }}</td> 
+                                                <td>{{ receipt.payment_date }}</td> 
+                                                </tr>
+                                                {% endfor %}
+                                        
+                                            
+                                        </tbody>
+                                      </table>
+                                </div>
+                                {% endfor %}
+
+                        </div>
+                        <div>
+                              <hr style="border: 2px solid black; margin: 10px 0;">
+                              <div class="card-header">
+                                  <h4>Physio Session Attended</h4>
+                              </div>
+                              
+
+                              <div class="card-body">
+                                  {% for admission in physiosession_admin %}
+                                  <div class="section-title mt-0">{{ admission.admission_no }}</div>
+                                  <table class="table table-bordered">
+                                  <thead>
+                                      <tr>
+                                          <th scope="col">#</th>
+                                          <th scope="col">Physio Session No</th>
+                                          <th scope="col">Quantity</th>
+                                          <th scope="col">Date </th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                          {% for physiosession in admission.physiosession_attended %}
+                                            {% for p in physiosession %}
+                                          <tr>
+                                          <th scope="row">{{ forloop.counter }}</th>
+                                          <td>{{ p.physiosession_no }}</td>
+                                          <td>{{ p.therapist }}</td> 
+                                          <td>{{ p.created_at }}</td> 
+                                          </tr>
+                                            {% endfor %}
+                                            <h5><strong>Total Number of Sessions Attended</strong>: {{ physiosession|length }}</h5>
+                                            <h5><strong>Total Number of Sessions Left</strong>: {{ admission.number_of_session_left }}</h5>
+                                            
+                                          {% endfor %}
+                                    
+                                      
+                                  </tbody>
+                                  </table>
+                              </div>
+                              {% endfor %}
+
+                        </div>
+                      {% endif %}  
+
+                    </div>
+                    {% comment %}! ----------------------- settting ---------------------------- {% endcomment %}
+                      <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="profile-tab2">
+                        {% if closed_admission_physiosession_admin %}
+                        <P><strong>CLOSED ADDMISSIONS</strong></p>
+                          <div>
+                            <hr style="border: 2px solid black; margin: 10px 0;">
+                            <div class="card-header">
+                                <h4>Payment</h4>
+                            </div>
+                        
+                            <div class="card-body">
+                                {% for admission in closed_admission_physiosession_admin %}
+                                <div class="d-flex justify-content-between section-title mt-0">
+                                    <p>{{ admission.admission_no }}</p>
+                                </div>
+                                <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
@@ -178,95 +223,62 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                            {% for receipt in admission.payement_info %}
-                                            <tr>
+                                        {% for receipt in admission.closed_admission_payement_info %}
+                                        <tr>
                                             <th scope="row">{{ forloop.counter }}</th>
                                             <td>{{ receipt.receipt_number }}</td>
-                                            <td>{{ receipt.quantity_of_session }}</td> 
-                                            <td>{{ receipt.payment_date }}</td> 
-                                            </tr>
-                                            {% endfor %}
-                                     
-                                        
+                                            <td>{{ receipt.quantity_of_session }}</td>
+                                            <td>{{ receipt.payment_date }}</td>
+                                        </tr>
+                                        {% endfor %}
                                     </tbody>
-                                    </table>
-                                </div>
+                                </table>
                                 {% endfor %}
-
                             </div>
-                            <div>
-                              <hr style="border: 2px solid black; margin: 10px 0;">
-                                  <div class="card-header">
-                                      <h4>Physio Session Attended</h4>
-                                  </div>
-                                 
-  
-                                  <div class="card-body">
-                                      {% for admission in physiosession_admin %}
-                                      <div class="section-title mt-0">{{ admission.admission_no }}</div>
-                                      <table class="table table-bordered">
-                                      <thead>
-                                          <tr>
-                                              <th scope="col">#</th>
-                                              <th scope="col">Physio Session No</th>
-                                              <th scope="col">Quantity</th>
-                                              <th scope="col">Date </th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                                              {% for physiosession in admission.physiosession_attended %}
-                                                {% for p in physiosession %}
+                        </div>
+                        <div>
+                          <hr style="border: 2px solid black; margin: 10px 0;">
+                          <div class="card-header">
+                              <h4>Physio Session Attended</h4>
+                          </div>
+                      
+                          <div class="card-body">
+                              {% for admission in closed_admission_physiosession_admin %}
+                              <div class="section-title mt-0">{{ admission.admission_no }}</div>
+                              <table class="table table-bordered">
+                                  <thead>
+                                      <tr>
+                                          <th scope="col">#</th>
+                                          <th scope="col">Physio Session No</th>
+                                          <th scope="col">Quantity</th>
+                                          <th scope="col">Date</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for physiosession in admission.closed_admission_physiosession_attended %}
+                                          {% for p in physiosession %}
                                               <tr>
-                                              <th scope="row">{{ forloop.counter }}</th>
-                                              <td>{{ p.physiosession_no }}</td>
-                                              <td>{{ p.therapist }}</td> 
-                                              <td>{{ p.created_at }}</td> 
+                                                  <th scope="row">{{ forloop.counter }}</th>
+                                                  <td>{{ p.physiosession_no }}</td>
+                                                  <td>{{ p.therapist }}</td>
+                                                  <td>{{ p.created_at }}</td>
                                               </tr>
-                                               {% endfor %}
-                                               <h5><strong>Total Number of Sessions Attended</strong>: {{ physiosession|length }}</h5>
-                                               <h5><strong>Total Number of Sessions Left</strong>: {{ admission.number_of_session_left }}</h5>
-                                               
-                                              {% endfor %}
-                                       
-                                          
-                                      </tbody>
-                                      </table>
-                                  </div>
-                                  {% endfor %}
-  
-                              </div>
+                                          {% endfor %}
+                                          <h5><strong>Total Number of Sessions Attended</strong>: {{ physiosession|length }}</h5>
+                                          {% comment %} <h5><strong>Total Number of Sessions Left</strong>: {{ admission.number_of_session_left }}</h5> {% endcomment %}
+                                      {% endfor %}
+                                  </tbody>
+                              </table>
+                              {% endfor %}
+                          </div>
+                      </div>
+                    
+                      {% else %}
+                      <h5><strong> {{ patient.get_full_name }} DOES NOT HAVE ANY CLOSED ADDMISSIONS</strong></h5>
+                      
+                        {% endif %}
 
-                    </div>
-                    {% comment %} <div class="section-title">Education</div>
-                      <ul>
-                        <li>B.A.,Gujarat University, Ahmedabad,India.</li>
-                        <li>M.A.,Gujarat University, Ahmedabad, India.</li>
-                        <li>P.H.D., Shaurashtra University, Rajkot</li>
-                      </ul>
-                      <div class="section-title">Experience</div>
-                      <ul>
-                        <li>One year experience as Jr. Professor from April-2009 to march-2010
-                          at B.
-                          J. Arts College, Ahmedabad.</li>
-                        <li>Three year experience as Jr. Professor at V.S. Arts &amp; Commerse
-                          Collage
-                          from April - 2008 to April - 2011.</li>
-                        <li>Lorem Ipsum is simply dummy text of the printing and typesetting
-                          industry.
-                        </li>
-                        <li>Lorem Ipsum is simply dummy text of the printing and typesetting
-                          industry.
-                        </li>
-                        <li>Lorem Ipsum is simply dummy text of the printing and typesetting
-                          industry.
-                        </li>
-                        <li>Lorem Ipsum is simply dummy text of the printing and typesetting
-                          industry.
-                        </li>
-                      </ul>
-                    </div> {% endcomment %}
-                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="profile-tab2">
-                      <form method="post" class="needs-validation">
+                      {% comment %} <form method="post" class="needs-validation">
                         <div class="card-header">
                           <h4>Edit Profile</h4>
                         </div>
@@ -322,7 +334,7 @@
                         <div class="card-footer text-right">
                           <button class="btn btn-primary">Save Changes</button>
                         </div>
-                      </form>
+                      </form> {% endcomment %}
                     </div>
                   </div>
                 </div>
@@ -331,97 +343,7 @@
           </div>
         </div>
       </section>
-      <div class="settingSidebar">
-        <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
-        </a>
-        <div class="settingSidebar-body ps-container ps-theme-default">
-          <div class=" fade show active">
-            <div class="setting-panel-header">Setting Panel
-            </div>
-            <div class="p-15 border-bottom">
-              <h6 class="font-medium m-b-10">Select Layout</h6>
-              <div class="selectgroup layout-color w-50">
-                <label class="selectgroup-item">
-                  <input type="radio" name="value" value="1" class="selectgroup-input-radio select-layout" checked>
-                  <span class="selectgroup-button">Light</span>
-                </label>
-                <label class="selectgroup-item">
-                  <input type="radio" name="value" value="2" class="selectgroup-input-radio select-layout">
-                  <span class="selectgroup-button">Dark</span>
-                </label>
-              </div>
-            </div>
-            <div class="p-15 border-bottom">
-              <h6 class="font-medium m-b-10">Sidebar Color</h6>
-              <div class="selectgroup selectgroup-pills sidebar-color">
-                <label class="selectgroup-item">
-                  <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar">
-                  <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
-                    data-original-title="Light Sidebar"><i class="fas fa-sun"></i></span>
-                </label>
-                <label class="selectgroup-item">
-                  <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar" checked>
-                  <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
-                    data-original-title="Dark Sidebar"><i class="fas fa-moon"></i></span>
-                </label>
-              </div>
-            </div>
-            <div class="p-15 border-bottom">
-              <h6 class="font-medium m-b-10">Color Theme</h6>
-              <div class="theme-setting-options">
-                <ul class="choose-theme list-unstyled mb-0">
-                  <li title="white" class="active">
-                    <div class="white"></div>
-                  </li>
-                  <li title="cyan">
-                    <div class="cyan"></div>
-                  </li>
-                  <li title="black">
-                    <div class="black"></div>
-                  </li>
-                  <li title="purple">
-                    <div class="purple"></div>
-                  </li>
-                  <li title="orange">
-                    <div class="orange"></div>
-                  </li>
-                  <li title="green">
-                    <div class="green"></div>
-                  </li>
-                  <li title="red">
-                    <div class="red"></div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="p-15 border-bottom">
-              <div class="theme-setting-options">
-                <label class="m-b-0">
-                  <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
-                    id="mini_sidebar_setting">
-                  <span class="custom-switch-indicator"></span>
-                  <span class="control-label p-l-10">Mini Sidebar</span>
-                </label>
-              </div>
-            </div>
-            <div class="p-15 border-bottom">
-              <div class="theme-setting-options">
-                <label class="m-b-0">
-                  <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
-                    id="sticky_header_setting">
-                  <span class="custom-switch-indicator"></span>
-                  <span class="control-label p-l-10">Sticky Header</span>
-                </label>
-              </div>
-            </div>
-            <div class="mt-4 mb-4 p-3 align-center rt-sidebar-last-ele">
-              <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
-                <i class="fas fa-undo"></i> Restore Default
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+  
   <!-- Modal with form -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"
   aria-hidden="true">

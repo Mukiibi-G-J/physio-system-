@@ -8,6 +8,13 @@ function get_patient_admission_id(patient_id) {
       const physio_admission_no = data.physio_admission_no;
       patient_admission_no.value = physio_admission_no;
       // patient_admission_id.innerHTML = data;
+      if (data.sessions_left){
+        iziToast.warning({
+          title: 'warning',
+          message:`Patient Still has sessions  ${data.sessions_left} left`,
+          position: 'topRight'
+      })
+      }
     },
   });
 }
