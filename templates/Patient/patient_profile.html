@@ -13,9 +13,15 @@
           </li>
           <li class="breadcrumb-item">
             <a href="index.html">
-              <i class="fas fa-home"></i></a>
+              <i class="fas fa-home"></i>
+            </a>
           </li>
-          <li class="breadcrumb-item">Other Pages</li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'physio-session' %}">
+              Record a Physio Session
+            </a>
+          
+          </li>
           <li class="breadcrumb-item">Profile</li>
         </ul>
         <div class="section-body">
@@ -106,8 +112,11 @@
                      
                          
                         {% if closed_admission_physiosession_admin %}
-                          <h5><strong> {{ patient.get_full_name }} DOES NOT HAVE ANY ADDMISSIONS CURRENTLY</strong></h5>
-                        
+                       <div>   
+                        <h5><strong> {{ patient.get_full_name }} DOES NOT HAVE ANY ADDMISSIONS CURRENTLY</strong></h5>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal_3">Create Admission</button>
+                       
+                      </div> 
                         {% else %}
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add New payment detials</button>
                          
@@ -344,7 +353,7 @@
         </div>
       </section>
   
-  <!-- Modal with form -->
+  {% comment %} !<!-- Modal with form 1--> {% endcomment %}
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -389,7 +398,7 @@
     </div>
   </div>
 </div>
-     <!-- Modal with form -->
+     {% comment %}!  <!-- Modal with form 2 --> {% endcomment %}
      <div class="modal fade" id="exampleModal_1" tabindex="-1" role="dialog" aria-labelledby="formModal"
      aria-hidden="true">
        <div class="modal-dialog" role="document">
@@ -428,7 +437,54 @@
          </div>
        </div>
      </div>
-     {% comment %} close modal {% endcomment %}
+     {% comment %}! close modal {% endcomment %}
+
+     {% comment %}!  <!-- Modal with form 3 --> {% endcomment %}
+     <div class="modal fade" id="exampleModal_3" tabindex="-1" role="dialog" aria-labelledby="formModal"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="formModal">Creating New Admission</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="" method="POST" action={% url "create_admission" %} >
+          {% csrf_token %}
+          <div class="form-group">
+            <label>Date of payement</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                <i class="far fa-calendar-alt"></i>
+
+                </div>
+              </div>
+              <input type="date" class="form-control" placeholder="Date" name="date" min="{{ date_string }}"  >
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Reciept  No  (format "R23064414")</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  {% comment %} <i class="fas fa-lock"></i> {% endcomment %}
+                  <i class="fas fa-font"></i>
+                </div>
+              </div>
+              <input type="text" class="form-control" placeholder="Receipt no" name="receipt">
+            </div>
+          </div>
+    
+          <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+     {% comment %}! close modal {% endcomment %}
 
  
 </div>

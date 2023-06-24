@@ -152,11 +152,22 @@ function myFunction(id) {
     },
     error: (error) => {
       console.log(error);
-      iziToast.warning({
-        title: `${error.responseJSON.message}`,
+      if (error.responseJSON.patient_doesnot_exist) {
+        iziToast.warning({
+          title: `${error.responseJSON.patient_doesnot_exist}`,
 
-        position: "topRight",
-      });
+          position: "topRight",
+        });
+        setTimeout(() => {
+          window.location.href = `${window.location.origin}/patient_profile/${error.responseJSON.patient_no}`;
+        }, 4000);
+      } else {
+        iziToast.warning({
+          title: `${error.responseJSON.message}`,
+
+          position: "topRight",
+        });
+      }
     },
   });
 }

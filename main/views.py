@@ -4,6 +4,8 @@ from .models import *
 from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.csrf import csrf_exempt
 
+from django.views.defaults import page_not_found
+
 from django.contrib import messages
 from django.urls import reverse
 from .decorators import auth_user_should_not_access
@@ -771,9 +773,6 @@ def get_in_patient(request, pk):
     pk = f"P{pk}"
     p = get_object_or_404(Patients, pk=pk)
 
-    # pt=Paymentdetails.objects.filter(visitno__visitno="P2300000010001").select_related("receiptno").filter(Q(itemcode="PHS04") | Q(itemcode="PHS004") |Q(itemcode="PH0010"))
-
-    # showw all the  p method
     print(p.totalvisits)
     if p.totalvisits == None:
         messages.add_message(
@@ -860,14 +859,176 @@ def get_in_patient(request, pk):
         #         t= Extrabills.objects.filter(visitno=f"{visit_number}")
 
 
+def patient_profile(request, pk):
+    p = get_object_or_404(Patient, patient_no=pk)
+    physio_admission = p.patient_physio_admission.all()
+
+    date_string = str(p.created_at.date())
+    context = {
+        "physiosession_admin": [],
+        "patient": p,
+        "date_string": date_string,
+    }
+    data = {
+        "admission_no": "",
+        "payement_info": [],
+        "physiosession_attended": [],
+        "number_of_session_left": "",
+    }
+    # for admission in physio_admission:
+    #     physiso = PhysioSession.objects.filter(admission_no=admission)
+    #     print(physiso)
+    #     for p in physiso:
+    print(physio_admission)
+    for admission in physio_admission:
+        admissions_no = admission.admission_no
+        receipt_admission = admission.receipt_physiosessionadmission.all()
+        print(admissions_no)
+        data["admission_no"] = admissions_no
+        physisosession_attended = (
+            PhysioSession.objects.filter(admission_no=admission)
+            .order_by("-created_at")
+            .filter(admission_no__discharge=False)
+        )
+        if physisosession_attended:
+            count_of_attended = physisosession_attended.count()
+            count_of_quantity_paid = sum(
+                receipt.quantity_of_session for receipt in receipt_admission
+            )
+
+            number_of_session_left = int(count_of_quantity_paid) - int(
+                count_of_attended
+            )
+            data["number_of_session_left"] = number_of_session_left
+            data["physiosession_attended"].append(physisosession_attended)
+            for receipt in receipt_admission:
+                receipt_number = receipt.receipt_number
+                quantity_of_session = receipt.quantity_of_session
+                payment_date = receipt.payment_date
+                my_dic = {
+                    "receipt_number": receipt_number,
+                    "quantity_of_session": quantity_of_session,
+                    "payment_date": payment_date,
+                }
+                data["payement_info"].append(my_dic)
+            context["physiosession_admin"].append(data)
+        if (
+            PhysioSession.objects.filter(admission_no=admission)
+            .order_by("-created_at")
+            .filter(admission_no__discharge=True)
+        ):
+            physisosession_attended = (
+                PhysioSession.objects.filter(admission_no=admission)
+                .order_by("-created_at")
+                .filter(admission_no__discharge=True)
+            )
+            count_of_attended = physisosession_attended.count()
+            # data["number_of_session_left"] = number_of_session_left
+            data["closed_admission_physiosession_attended"] = [physisosession_attended]
+            for receipt in receipt_admission:
+                receipt_number = receipt.receipt_number
+                quantity_of_session = receipt.quantity_of_session
+                payment_date = receipt.payment_date
+                my_dic = {
+                    "receipt_number": receipt_number,
+                    "quantity_of_session": quantity_of_session,
+                    "payment_date": payment_date,
+                }
+                data["closed_admission_payement_info"] = [my_dic]
+                print(my_dic)
+            context["closed_admission_physiosession_admin"] = [data]
+        if PhysioSession.objects.filter(admission_no=admission).order_by(
+            "-created_at"
+        ).filter(admission_no__discharge=False) and PhysioSession.objects.filter(
+            admission_no=admission
+        ).order_by(
+            "-created_at"
+        ).filter(
+            admission_no__discharge=False
+        ):
+            context["no_physiosession_admission"] = "No physiosession admision"
+    # print(context)
+    if request.method == "POST":
+        print(request.POST)
+        data = request.POST
+        date = data.get("data", None)
+        receipt = data.get("receipt", None)
+        admission_no = data.get("admission_no", None)
+        print(admission_no, date, receipt)
+
+        if receipt:
+            if Receipt.objects.filter(receipt_number=receipt).exists():
+                messages.add_message(
+                    request, messages.ERROR, f"Receipt NO is allready registerd"
+                )
+                return render(request, "patient/patient_profile.html", context)
+
+            payement_detail = get_object_or_404(Paymentdetails, receiptno=receipt)
+
+            visit_no = payement_detail.visitno.visitno
+            print(visit_no)
+            if payement_detail.visitno.paydate.strftime("%Y-%m-%d") == date:
+                quantity_of_session_payed = payement_detail.quantity
+                print(quantity_of_session_payed)
+                physiosession_admission = PhysioSessionAdmission.objects.get(
+                    patient__patient_no=pk
+                )
+                new_quantity_of_sessions = int(
+                    physiosession_admission.quantity_of_sessions
+                ) + int(quantity_of_session_payed)
+
+                print(new_quantity_of_sessions)
+
+                receipt_obj = Receipt.objects.create(
+                    physiosessionadmission=physiosession_admission,
+                    receipt_number=receipt,
+                    visit_no=visit_no,
+                    payment_date=date,
+                    quantity_of_session=quantity_of_session_payed,
+                )
+
+                # receipt_obj.save()
+                physiosession_admission.quantity_of_sessions = new_quantity_of_sessions
+                physiosession_admission.save()
+
+                messages.add_message(request, messages.SUCCESS, f"Updated Successfully")
+                return render(request, "patient/patient_profile.html", context)
+
+            else:
+                messages.add_message(
+                    request, messages.ERROR, f"Please Select the right date"
+                )
+                return render(request, "patient/patient_profile.html", context)
+        elif admission_no:
+            admission_no = PhysioSessionAdmission.objects.get(admission_no=admission_no)
+            patient = (
+                admission_no.patient.surname + " " + admission_no.patient.first_name
+            )
+            admission_no.discharge = True
+            admission_no.save()
+            print(patient)
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                f"Addmission for {patient} has been Closed Successfully",
+            )
+            print(admission_no)
+
+    return render(request, "patient/patient_profile.html", context)
+
+
 def get_patient(request, pk):
     res = "not thing much"
     pk = f"P{pk}"
     p = get_object_or_404(Patients, pk=pk)
 
-    # pt=Paymentdetails.objects.filter(visitno__visitno="P2300000010001").select_related("receiptno").filter(Q(itemcode="PHS04") | Q(itemcode="PHS004") |Q(itemcode="PH0010"))
+    if len(Patient.objects.filter(patient_no=pk)) > 0:
+        print("adsfasdfasdfasf")
 
-    # showw all the  p method
+        return JsonResponse(
+            {"patient_doesnot_exist": "Patient already  exist.", "patient_no": pk},
+            status=400,
+        )
 
     if p.totalvisits == None:
         messages.add_message(
@@ -1150,171 +1311,11 @@ def get_patient(request, pk):
     #         print(p)
 
 
-def patient_profile(request, pk):
-    p = Patient.objects.get(patient_no=pk).pk
-    p = get_object_or_404(Patient, pk=p)
-    physio_admission = p.patient_physio_admission.all()
-
-    date_string = str(p.created_at.date())
-    context = {
-        "physiosession_admin": [],
-        "patient": p,
-        "date_string": date_string,
-    }
-    data = {
-        "admission_no": "",
-        "payement_info": [],
-        "physiosession_attended": [],
-        "number_of_session_left": "",
-    }
-    # for admission in physio_admission:
-    #     physiso = PhysioSession.objects.filter(admission_no=admission)
-    #     print(physiso)
-    #     for p in physiso:
-    print(physio_admission)
-    for admission in physio_admission:
-        admissions_no = admission.admission_no
-        receipt_admission = admission.receipt_physiosessionadmission.all()
-        print(admissions_no)
-        data["admission_no"] = admissions_no
-        physisosession_attended = (
-            PhysioSession.objects.filter(admission_no=admission)
-            .order_by("-created_at")
-            .filter(admission_no__discharge=False)
-        )
-        if physisosession_attended:
-            count_of_attended = physisosession_attended.count()
-            count_of_quantity_paid = sum(
-                receipt.quantity_of_session for receipt in receipt_admission
-            )
-
-            number_of_session_left = int(count_of_quantity_paid) - int(
-                count_of_attended
-            )
-            data["number_of_session_left"] = number_of_session_left
-            data["physiosession_attended"].append(physisosession_attended)
-            for receipt in receipt_admission:
-                receipt_number = receipt.receipt_number
-                quantity_of_session = receipt.quantity_of_session
-                payment_date = receipt.payment_date
-                my_dic = {
-                    "receipt_number": receipt_number,
-                    "quantity_of_session": quantity_of_session,
-                    "payment_date": payment_date,
-                }
-                data["payement_info"].append(my_dic)
-            context["physiosession_admin"].append(data)
-        if (
-            PhysioSession.objects.filter(admission_no=admission)
-            .order_by("-created_at")
-            .filter(admission_no__discharge=True)
-        ):
-            physisosession_attended = (
-                PhysioSession.objects.filter(admission_no=admission)
-                .order_by("-created_at")
-                .filter(admission_no__discharge=True)
-            )
-            count_of_attended = physisosession_attended.count()
-            # data["number_of_session_left"] = number_of_session_left
-            data["closed_admission_physiosession_attended"] = [physisosession_attended]
-            for receipt in receipt_admission:
-                receipt_number = receipt.receipt_number
-                quantity_of_session = receipt.quantity_of_session
-                payment_date = receipt.payment_date
-                my_dic = {
-                    "receipt_number": receipt_number,
-                    "quantity_of_session": quantity_of_session,
-                    "payment_date": payment_date,
-                }
-                data["closed_admission_payement_info"] = [my_dic]
-                print(my_dic)
-            context["closed_admission_physiosession_admin"] = [data]
-        if PhysioSession.objects.filter(admission_no=admission).order_by(
-            "-created_at"
-        ).filter(admission_no__discharge=False) and PhysioSession.objects.filter(
-            admission_no=admission
-        ).order_by(
-            "-created_at"
-        ).filter(
-            admission_no__discharge=False
-        ):
-            context["no_physiosession_admission"] = "No physiosession admision"
-    # print(context)
-    if request.method == "POST":
-        print(request.POST)
-        data = request.POST
-        date = data.get("data", None)
-        receipt = data.get("receipt", None)
-        admission_no = data.get("admission_no", None)
-        print(admission_no, date, receipt)
-
-        if receipt:
-            if Receipt.objects.filter(receipt_number=receipt).exists():
-                messages.add_message(
-                    request, messages.ERROR, f"Receipt NO is allready registerd"
-                )
-                return render(request, "patient/patient_profile.html", context)
-
-            payement_detail = get_object_or_404(Paymentdetails, receiptno=receipt)
-
-            visit_no = payement_detail.visitno.visitno
-            print(visit_no)
-            if payement_detail.visitno.paydate.strftime("%Y-%m-%d") == date:
-                quantity_of_session_payed = payement_detail.quantity
-                print(quantity_of_session_payed)
-                physiosession_admission = PhysioSessionAdmission.objects.get(
-                    patient__patient_no=pk
-                )
-                new_quantity_of_sessions = int(
-                    physiosession_admission.quantity_of_sessions
-                ) + int(quantity_of_session_payed)
-
-                print(new_quantity_of_sessions)
-
-                receipt_obj = Receipt.objects.create(
-                    physiosessionadmission=physiosession_admission,
-                    receipt_number=receipt,
-                    visit_no=visit_no,
-                    payment_date=date,
-                    quantity_of_session=quantity_of_session_payed,
-                )
-
-                # receipt_obj.save()
-                physiosession_admission.quantity_of_sessions = new_quantity_of_sessions
-                physiosession_admission.save()
-
-                messages.add_message(request, messages.SUCCESS, f"Updated Successfully")
-                return render(request, "patient/patient_profile.html", context)
-
-            else:
-                messages.add_message(
-                    request, messages.ERROR, f"Please Select the right date"
-                )
-                return render(request, "patient/patient_profile.html", context)
-        elif admission_no:
-            admission_no = PhysioSessionAdmission.objects.get(admission_no=admission_no)
-            patient = (
-                admission_no.patient.surname + " " + admission_no.patient.first_name
-            )
-            admission_no.discharge = True
-            admission_no.save()
-            print(patient)
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                f"Addmission for {patient} has been Closed Successfully",
-            )
-            print(admission_no)
-
-    return render(request, "patient/patient_profile.html", context)
-
-
 def get_patient_admission_no(request, pk):
     # if request.method == "POST":
     p = Patient.objects.get(patient_no=pk).pk
     p = get_object_or_404(Patient, pk=p)
     physio_admission = p.patient_physio_admission.all()
-    
 
     for admission_no_obj in physio_admission:
         admission_no = admission_no_obj.admission_no
@@ -1443,37 +1444,50 @@ def physio_session_search(request):
 def get_patient_physio(request, pk):
     pk = f"P{pk}"
     p = get_object_or_404(Patient, patient_no=pk)
-    # my= Patient.objects.filter(patient_no=pk).select_related("patient")
-    # print(my)
-
-    print([admission.quantity_of_sessions for admission in p.patient_physio_admission.all()])
-    res = {
-        "pk": "",
-        "surname": p.surname,
-        "firstname": p.first_name,
-        "pin_no": p.patient_no,
-        "quantity": [
+    print(
+        [
             admission.quantity_of_sessions
             for admission in p.patient_physio_admission.all()
-        ],
-        "gender": p.gender,
-        "diagnosis": [
-            admission.diagnosis.name for admission in p.patient_physio_admission.all()
-        ][0],
-        "patient_type": "",
-        "receipt_no": [],
-        "invoice_no": [],
-        "extra_billno": "",
-        "admission_no": "",
-        "admission_date": "",
-        "patient_type": "",
-    }
-    quantity = res["quantity"][0]
-    print(quantity)
+        ]
+    )
 
-    if int(quantity) == 0:
+    check_patient_admission = [
+        admission.admission_no if admission.discharge == False else None
+        for admission in p.patient_physio_admission.all()
+    ]
+    if check_patient_admission[0] is not None:
+        res = {
+            "pk": "",
+            "surname": p.surname,
+            "firstname": p.first_name,
+            "pin_no": p.patient_no,
+            "quantity": [
+                admission.quantity_of_sessions
+                for admission in p.patient_physio_admission.all()
+            ],
+            "gender": p.gender,
+            "diagnosis": [
+                admission.diagnosis.name
+                for admission in p.patient_physio_admission.all()
+            ][0],
+            "patient_type": "",
+            "receipt_no": [],
+            "invoice_no": [],
+            "extra_billno": "",
+            "admission_no": "",
+            "admission_date": "",
+            "patient_type": "",
+        }
+        quantity = res["quantity"][0]
+        print(quantity)
+
+        if int(quantity) == 0:
+            return JsonResponse(
+                {"message": "Please a Patient must first pay for a session"}, status=400
+            )
+    else:
         return JsonResponse(
-            {"message": "Please Patient must first pay for a session"}, status=400
+            {"message": "Please Patient must first be Admitted"}, status=400
         )
     return JsonResponse({"data": res}, status=200)
 
@@ -1782,8 +1796,8 @@ def export_all_phsysioSessions(request):
 
 
 # ? 404 error
-
-
-def page_not_found(request, exception):
-    # Additional logic or data retrieval if needed
-    return render(request, "_partials/404.html")
+def custom_404(request, exception):
+    custom_message = "Oops! Something went wrong."  # Example custom message
+    return render(
+        request, "_partials/404.html", {"custom_message": custom_message}, status=404
+    )
