@@ -860,14 +860,24 @@ def get_in_patient(request, pk):
 
 
 def patient_profile(request, pk):
+    physioSessionAdmissionForm = PhysioSessionAdmissionForm()
     p = get_object_or_404(Patient, patient_no=pk)
-    physio_admission = p.patient_physio_admission.all()
+    physio_admission_closed = p.patient_physio_admission.filter(discharge=True).all()
+    physio_admission = p.patient_physio_admission.filter(discharge=False).all()
 
-    date_string = str(p.created_at.date())
+    date_of_reg = p.created_at.date()
+    date_of_last_admission = [
+        physio_admission.discharge_date
+        if physio_admission.discharge_date > date_of_reg
+        else date_of_reg
+        for physio_admission in physio_admission_closed
+    ]
+    date_string = str(date_of_last_admission[0])
     context = {
         "physiosession_admin": [],
         "patient": p,
         "date_string": date_string,
+        "form": physioSessionAdmissionForm,
     }
     data = {
         "admission_no": "",
@@ -879,18 +889,17 @@ def patient_profile(request, pk):
     #     physiso = PhysioSession.objects.filter(admission_no=admission)
     #     print(physiso)
     #     for p in physiso:
-    print(physio_admission)
+
     for admission in physio_admission:
         admissions_no = admission.admission_no
         receipt_admission = admission.receipt_physiosessionadmission.all()
-        print(admissions_no)
         data["admission_no"] = admissions_no
-        physisosession_attended = (
-            PhysioSession.objects.filter(admission_no=admission)
-            .order_by("-created_at")
-            .filter(admission_no__discharge=False)
-        )
-        if physisosession_attended:
+
+        physisosession_attended = PhysioSession.objects.filter(
+            admission_no=PhysioSessionAdmission.objects.get(pk=admission.pk)
+        ).order_by("-created_at")
+        print(physisosession_attended)
+        if len(physisosession_attended) > 0:
             count_of_attended = physisosession_attended.count()
             count_of_quantity_paid = sum(
                 receipt.quantity_of_session for receipt in receipt_admission
@@ -901,19 +910,27 @@ def patient_profile(request, pk):
             )
             data["number_of_session_left"] = number_of_session_left
             data["physiosession_attended"].append(physisosession_attended)
-            for receipt in receipt_admission:
-                receipt_number = receipt.receipt_number
-                quantity_of_session = receipt.quantity_of_session
-                payment_date = receipt.payment_date
-                my_dic = {
-                    "receipt_number": receipt_number,
-                    "quantity_of_session": quantity_of_session,
-                    "payment_date": payment_date,
-                }
-                data["payement_info"].append(my_dic)
+        for receipt in receipt_admission:
+            receipt_number = receipt.receipt_number
+
+            quantity_of_session = receipt.quantity_of_session
+            payment_date = receipt.payment_date
+            my_dic = {
+                "receipt_number": receipt_number,
+                "quantity_of_session": quantity_of_session,
+                "payment_date": payment_date,
+            }
+            data["payement_info"].append(my_dic)
             context["physiosession_admin"].append(data)
+        print(
+            (
+                PhysioSession.objects.filter(admission_no=admission)
+                .order_by("-created_at")
+                .filter(admission_no__discharge=True)
+            )
+        )
         if (
-            PhysioSession.objects.filter(admission_no=admission)
+            PhysioSession.objects.filter(admission_no__admission_no=admission)
             .order_by("-created_at")
             .filter(admission_no__discharge=True)
         ):
@@ -951,12 +968,14 @@ def patient_profile(request, pk):
     if request.method == "POST":
         print(request.POST)
         data = request.POST
-        date = data.get("data", None)
+        print(data)
+        date = data.get("date", None)
         receipt = data.get("receipt", None)
         admission_no = data.get("admission_no", None)
-        print(admission_no, date, receipt)
+        patient_no = data.get("patient_no", None)
 
-        if receipt:
+        # info_list = [admission_no,patient_no,receipt,date]
+        if receipt and date and patient_no == None:
             if Receipt.objects.filter(receipt_number=receipt).exists():
                 messages.add_message(
                     request, messages.ERROR, f"Receipt NO is allready registerd"
@@ -966,10 +985,10 @@ def patient_profile(request, pk):
             payement_detail = get_object_or_404(Paymentdetails, receiptno=receipt)
 
             visit_no = payement_detail.visitno.visitno
-            print(visit_no)
+
             if payement_detail.visitno.paydate.strftime("%Y-%m-%d") == date:
                 quantity_of_session_payed = payement_detail.quantity
-                print(quantity_of_session_payed)
+
                 physiosession_admission = PhysioSessionAdmission.objects.get(
                     patient__patient_no=pk
                 )
@@ -1012,7 +1031,48 @@ def patient_profile(request, pk):
                 messages.SUCCESS,
                 f"Addmission for {patient} has been Closed Successfully",
             )
-            print(admission_no)
+
+        elif date and receipt and patient_no:
+            doctor = data.get("doctor")
+            diagnosis = data.get("diagnosis")
+            more_notes = data.get("more_notes")
+            if Receipt.objects.filter(receipt_number=receipt).exists():
+                messages.add_message(
+                    request, messages.ERROR, f"Receipt NO is allready registerd"
+                )
+                return render(request, "patient/patient_profile.html", context)
+
+            payement_detail = get_object_or_404(Paymentdetails, receiptno=receipt)
+            visit_no = payement_detail.visitno.visitno
+
+            if payement_detail.visitno.paydate.strftime("%Y-%m-%d") == date:
+                quantity_of_session_payed = payement_detail.quantity
+
+                physiosession_admission = PhysioSessionAdmission()
+                physiosession_admission.therapist = request.user
+                physiosession_admission.patient = Patient.objects.get(
+                    patient_no=patient_no
+                )
+                physiosession_admission.doctor = Doctor.objects.get(pk=doctor)
+                physiosession_admission.diagnosis = Diagnosis.objects.get(pk=diagnosis)
+                physiosession_admission.quantity_of_sessions = quantity_of_session_payed
+                physiosession_admission.more_notes = more_notes
+                physiosession_admission.date_of_visit = date
+                physiosession_admission.save(patient_no=patient_no)
+                receipt_obj = Receipt.objects.create(
+                    physiosessionadmission=physiosession_admission,
+                    receipt_number=receipt,
+                    visit_no=visit_no,
+                    payment_date=date,
+                    quantity_of_session=quantity_of_session_payed,
+                )
+
+                # receipt_obj.save()
+                messages.add_message(
+                    request, messages.SUCCESS, f"Admission created  Successfully"
+                )
+
+                print(date, patient_no, receipt)
 
     return render(request, "patient/patient_profile.html", context)
 
@@ -1452,10 +1512,11 @@ def get_patient_physio(request, pk):
     )
 
     check_patient_admission = [
-        admission.admission_no if admission.discharge == False else None
+        False if admission.discharge == False else None
         for admission in p.patient_physio_admission.all()
     ]
-    if check_patient_admission[0] is not None:
+    print(check_patient_admission)
+    if False in check_patient_admission:
         res = {
             "pk": "",
             "surname": p.surname,
@@ -1478,7 +1539,8 @@ def get_patient_physio(request, pk):
             "admission_date": "",
             "patient_type": "",
         }
-        quantity = res["quantity"][0]
+        quantity = max(res["quantity"])
+        res["quantity"] = quantity
         print(quantity)
 
         if int(quantity) == 0:

@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib import messages
 
+
 class CustomUser(AbstractUser):
     therapist = models.BooleanField(default=False)
     phone_number = PhoneNumberField()
@@ -89,29 +90,32 @@ class PhysioSessionAdmission(models.Model):
     )
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True)
     discharge = models.BooleanField(default=False)
+    discharge_date = models.DateField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     more_notes = models.TextField()
     patient_type = models.CharField(max_length=255)
     clinic_master_admission_no = models.CharField(max_length=255, blank=True, null=True)
     quantity_of_sessions = models.PositiveIntegerField(default=0)
 
-    def save(self, *args, **kwargs):
+    def save(self, patient_no=None, *args, **kwargs):
         if not self.pk:
             last_admission = PhysioSessionAdmission.objects.filter(
-                patient__patient_no=self.patient
+                patient__patient_no=patient_no
             )
-
+            print(last_admission)
             # last_admission = PhysioSessionAdmission.objects.order_by("-id").first()
             if len(last_admission) > 0:
-                last_admission = last_admission[-1]
-                last_id = int(last_admission.admission_no.split("-")[-1][2:])
+                last_admission = last_admission.last()
+                admission_parts = last_admission.admission_no.split("-")
+                last_id = int(last_admission.admission_no.split("-")[-1][3:])
+
+                print(last_id)
                 self.admission_no = (
-                    f"{self.patient.patient_no}-PH{str(last_id + 1).zfill(4)}"
+                    f"{self.patient.patient_no}-PHA{str(last_id + 1).zfill(4)}"
                 )
-                # print(self.admission_no)
+
             else:
                 self.admission_no = f"{self.patient.patient_no}-PHA0001"
-                print(self.admission_no)
         super().save(*args, **kwargs)
 
 
@@ -133,7 +137,7 @@ class PhysioSession(models.Model):
                 .first()
             )
             if last_admission.quantity_of_sessions > 0:
-                new_quantity_0f_session= (int(last_admission.quantity_of_sessions) - 1)
+                new_quantity_0f_session = int(last_admission.quantity_of_sessions) - 1
 
                 last_admission.quantity_of_sessions = new_quantity_0f_session
                 last_admission.save()
@@ -144,8 +148,12 @@ class PhysioSession(models.Model):
                 )
 
                 if last_physioSession:
-                    last_id = int(last_physioSession.physiosession_no.split("-")[-1][2:])
-                    self.physiosession_no = f"{patient_no}-PH{str(last_id + 1).zfill(4)}"
+                    last_id = int(
+                        last_physioSession.physiosession_no.split("-")[-1][2:]
+                    )
+                    self.physiosession_no = (
+                        f"{patient_no}-PH{str(last_id + 1).zfill(4)}"
+                    )
                     self.admission_no = last_admission
                     print(self.admission_no)
                 else:
@@ -153,7 +161,6 @@ class PhysioSession(models.Model):
                     self.admission_no = last_admission
             else:
                 messages.error("No more sessions available for the admission.")
-                
 
         super().save(*args, **kwargs)
 

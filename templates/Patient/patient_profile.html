@@ -451,32 +451,54 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="" method="POST" action={% url "create_admission" %} >
+        <form class="" method="POST"  autocomplete="off" >
           {% csrf_token %}
+          <div class="form-group">
+            <label>Patient No</label>
+            <div class="input-group">
+              <input  type="text" name="patient_no" class="form-control" value={{ patient.patient_no }} readonly />
+              
+            </div>
+          </div>
           <div class="form-group">
             <label>Date of payement</label>
             <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text">
-                <i class="far fa-calendar-alt"></i>
-
-                </div>
-              </div>
+              
               <input type="date" class="form-control" placeholder="Date" name="date" min="{{ date_string }}"  >
             </div>
           </div>
           <div class="form-group">
             <label>Reciept  No  (format "R23064414")</label>
             <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text">
-                  {% comment %} <i class="fas fa-lock"></i> {% endcomment %}
-                  <i class="fas fa-font"></i>
-                </div>
-              </div>
-              <input type="text" class="form-control" placeholder="Receipt no" name="receipt">
+             
+              <input type="text" class="form-control" placeholder="Receipt no" name="receipt" >
             </div>
           </div>
+          <div class="form-group">
+            <label>Doctor </label>
+            <div class="input-group">
+             
+              {% render_field form.doctor class="form-control"  %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Diagnosis</label>
+            <div class="input-group">
+              
+              {% render_field form.diagnosis class="form-control"  %}
+
+            </div>
+          </div>
+      
+          <div class="form-group">
+            <label>More Notes</label>
+            <div class="input-group">
+              {% render_field  form.more_notes  class="form-control"  %}
+              
+            </div>
+          </div>
+        
+          
     
           <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>
         </form>
