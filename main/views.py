@@ -865,14 +865,25 @@ def patient_profile(request, pk):
     physio_admission_closed = p.patient_physio_admission.filter(discharge=True).all()
     physio_admission = p.patient_physio_admission.filter(discharge=False).all()
 
-    date_of_reg = p.created_at.date()
-    date_of_last_admission = [
+    date_of_closed_admission = [
         physio_admission.discharge_date
-        if physio_admission.discharge_date > date_of_reg
-        else date_of_reg
+        # if physio_admission.discharge_date
+        # > p.created_at.date()  # Check if discharge_date > date_of_reg
+        # else p.created_at.date()  # If not, use date_of_reg
         for physio_admission in physio_admission_closed
     ]
-    date_string = str(date_of_last_admission[0])
+    date_of_last_admission = [
+        physio_admission.created_at.date() for physio_admission in physio_admission
+    ]
+    combinded_list = date_of_last_admission + date_of_closed_admission
+    # latest_date = max(combinded_list)
+    # print(combinded_list, date_of_last_admission)
+    print(combinded_list[0] )
+    if combinded_list[0] == "None":
+        date_string = str(max(combinded_list))
+    else:
+        date_string = str(p.created_at.date())
+
     context = {
         "physiosession_admin": [],
         "patient": p,
@@ -889,17 +900,28 @@ def patient_profile(request, pk):
     #     physiso = PhysioSession.objects.filter(admission_no=admission)
     #     print(physiso)
     #     for p in physiso:
-
+    print(physio_admission)
+    if len(physio_admission) == 0:
+        context["patient_has_running_admissions"] = "False"
+    if len(physio_admission_closed) == 0:
+        context["patient_has_close_admissions"] = "False"
     for admission in physio_admission:
         admissions_no = admission.admission_no
         receipt_admission = admission.receipt_physiosessionadmission.all()
         data["admission_no"] = admissions_no
+        print(receipt_admission)
 
-        physisosession_attended = PhysioSession.objects.filter(
-            admission_no=PhysioSessionAdmission.objects.get(pk=admission.pk)
-        ).order_by("-created_at")
+        physisosession_attended = (
+            PhysioSession.objects.filter(
+                admission_no=PhysioSessionAdmission.objects.get(pk=admission.pk)
+            )
+            .order_by("-created_at")
+            .filter(admission_no__discharge=False)
+        )
+
+        print(admission.pk)
         print(physisosession_attended)
-        if len(physisosession_attended) > 0:
+        if len(physisosession_attended) >= 0:
             count_of_attended = physisosession_attended.count()
             count_of_quantity_paid = sum(
                 receipt.quantity_of_session for receipt in receipt_admission
@@ -910,30 +932,46 @@ def patient_profile(request, pk):
             )
             data["number_of_session_left"] = number_of_session_left
             data["physiosession_attended"].append(physisosession_attended)
-        for receipt in receipt_admission:
-            receipt_number = receipt.receipt_number
+            for receipt in receipt_admission:
+                receipt_number = receipt.receipt_number
 
-            quantity_of_session = receipt.quantity_of_session
-            payment_date = receipt.payment_date
-            my_dic = {
-                "receipt_number": receipt_number,
-                "quantity_of_session": quantity_of_session,
-                "payment_date": payment_date,
-            }
-            data["payement_info"].append(my_dic)
+                quantity_of_session = receipt.quantity_of_session
+                payment_date = receipt.payment_date
+                my_dic = {
+                    "receipt_number": receipt_number,
+                    "quantity_of_session": quantity_of_session,
+                    "payment_date": payment_date,
+                }
+
+                data["payement_info"].append(my_dic)
+                print(my_dic)
             context["physiosession_admin"].append(data)
-        print(
-            (
-                PhysioSession.objects.filter(admission_no=admission)
-                .order_by("-created_at")
-                .filter(admission_no__discharge=True)
+            context["patient_has_running_admissions"] = "True"
+        # else:
+        #     context["patient_has_running_admissions"] = "False"
+
+        #     print(context["patient_has_running_admissions"])
+    for admission in physio_admission_closed:
+        admissions_no = admission.admission_no
+        receipt_admission = admission.receipt_physiosessionadmission.all()
+        data["admission_no_closed"] = admissions_no
+
+        print(receipt_admission)
+
+        physisosession_attended = (
+            PhysioSession.objects.filter(
+                admission_no=PhysioSessionAdmission.objects.get(pk=admission.pk)
             )
+            .order_by("-created_at")
+            .filter(admission_no__discharge=False)
         )
+
         if (
-            PhysioSession.objects.filter(admission_no__admission_no=admission)
+            PhysioSession.objects.filter(admission_no=admission.pk)
             .order_by("-created_at")
             .filter(admission_no__discharge=True)
         ):
+            print("my_admission", admission)
             physisosession_attended = (
                 PhysioSession.objects.filter(admission_no=admission)
                 .order_by("-created_at")
@@ -952,18 +990,21 @@ def patient_profile(request, pk):
                     "payment_date": payment_date,
                 }
                 data["closed_admission_payement_info"] = [my_dic]
-                print(my_dic)
+                print("second", my_dic)
             context["closed_admission_physiosession_admin"] = [data]
-        if PhysioSession.objects.filter(admission_no=admission).order_by(
-            "-created_at"
-        ).filter(admission_no__discharge=False) and PhysioSession.objects.filter(
-            admission_no=admission
-        ).order_by(
-            "-created_at"
-        ).filter(
-            admission_no__discharge=False
-        ):
-            context["no_physiosession_admission"] = "No physiosession admision"
+            context["patient_has_close_admissions"] = "True"
+            print(context)
+
+        # if PhysioSession.objects.filter(admission_no=admission.pk).order_by(
+        #     "-created_at"
+        # ).filter(admission_no__discharge=False) and PhysioSession.objects.filter(
+        #     admission_no=admission
+        # ).order_by(
+        #     "-created_at"
+        # ).filter(
+        #     admission_no__discharge=False
+        # ):
+        #     context["no_physiosession_admission"] = "No physiosession admision"
     # print(context)
     if request.method == "POST":
         print(request.POST)
@@ -1023,6 +1064,7 @@ def patient_profile(request, pk):
             patient = (
                 admission_no.patient.surname + " " + admission_no.patient.first_name
             )
+            admission_no.discharge_date = date
             admission_no.discharge = True
             admission_no.save()
             print(patient)
@@ -1447,14 +1489,29 @@ def physio_session(request):
         therapies = data.getlist("therapy")
         patient_pin = data["patient_pin"]
 
-        active_admmissio_no = PhysioSessionAdmission.objects.get(
-            patient__patient_no=patient_pin, discharge=False
-        )
+        # active_admmissio_no = PhysioSessionAdmission.objects.get(
+        #     patient__patient_no=patient_pin,
+        # )
         print(therapies)
-        physio_session = PhysioSession()
-        physio_session.therapist = request.user
-        physio_session.more_notes = more_notes
-        physio_session.save(patient_no=patient_pin)  # Save the physio_session object
+        last_admission = (
+            PhysioSessionAdmission.objects.filter(patient__patient_no=patient_pin)
+            .order_by("-id")
+            .filter(discharge=False)
+            .first()
+        )
+        print(last_admission)
+        if last_admission.quantity_of_sessions > 0:
+            new_quantity_0f_session = int(last_admission.quantity_of_sessions) - 1
+            last_admission.quantity_of_sessions = new_quantity_0f_session
+            last_admission.save()
+            physio_session = PhysioSession()
+            physio_session.therapist = request.user
+            physio_session.more_notes = more_notes
+            physio_session.quantity_of_session_left = new_quantity_0f_session
+
+            physio_session.save(
+                patient_no=patient_pin
+            )  # Save the physio_session object
 
         # Set the therapy field after saving the physio_session object
         # physio_session.therapy.set(therapies)
@@ -1462,9 +1519,15 @@ def physio_session(request):
         for therapy_id in therapies:
             therapy = Therapy.objects.get(id=therapy_id)
             physio_session.therapy.add(therapy)
-        physio_session.save()
-        # print(active_admission_no)
+        pateint_full_name = Patient.objects.get(patient_no=patient_pin)
 
+        physio_session.save()
+
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            f"{pateint_full_name} physio session recorded successful",
+        )
     return render(
         request, "Patient/physio_session.html", {"form": physioSessionAdmissionForm}
     )
@@ -1564,6 +1627,7 @@ def physio_session_table(request):
         data = {
             "admission_no": p.admission_no.admission_no,
             "patient_no": p.admission_no.patient.patient_no,
+            "number_of_sessions_left": p.admission_no.quantity_of_sessions,
             "physiosession_no": p.physiosession_no,
             "diagnosis": p.admission_no.diagnosis,
             "therapy": p.therapy.all(),

@@ -23,9 +23,10 @@
                   <tr>
                     <th>Date</th>
 
-                    <th>PIN NO</th>
                     <th>ADMISSION NO</th>
                     <th>PHYSIO SESSION NO</th>
+                    <th>SESSION LEFT</th>
+                    
                     <th>Diagnosis</th>
                     <th>Therapy</th>
                     <th>Ward</th>
@@ -40,12 +41,12 @@
                   <tr>
                     <td>{{ p.created_at }}</td>
 
-                    <td style="cursor: pointer">
-                      {{ p.patient_no }}
-                    </td>
+                    
                     <td>{{ p.admission_no }}</td>
                     <td>{{ p.physiosession_no }}</td>
-
+                    <td >
+                      {{ p.number_of_sessions_left }}
+                    </td>
                    
                     <td>{{ p.diagnosis }}</td>
                       <td>

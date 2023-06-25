@@ -111,11 +111,11 @@
                       </div>
                      
                          
-                        {% if closed_admission_physiosession_admin %}
+                        {% if patient_has_running_admissions == "False" %}
                        <div>   
                         <h5><strong> {{ patient.get_full_name }} DOES NOT HAVE ANY ADDMISSIONS CURRENTLY</strong></h5>
                         <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal_3">Create Admission</button>
-                       
+        
                       </div> 
                         {% else %}
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add New payment detials</button>
@@ -209,7 +209,7 @@
                     </div>
                     {% comment %}! ----------------------- settting ---------------------------- {% endcomment %}
                       <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="profile-tab2">
-                        {% if closed_admission_physiosession_admin %}
+                        {% if patient_has_close_admissions == "True"  %}
                         <P><strong>CLOSED ADDMISSIONS</strong></p>
                           <div>
                             <hr style="border: 2px solid black; margin: 10px 0;">
@@ -220,7 +220,7 @@
                             <div class="card-body">
                                 {% for admission in closed_admission_physiosession_admin %}
                                 <div class="d-flex justify-content-between section-title mt-0">
-                                    <p>{{ admission.admission_no }}</p>
+                                    <p>{{ admission.admission_no_closed }}</p>
                                 </div>
                                 <table class="table table-bordered">
                                     <thead>
@@ -253,7 +253,7 @@
                       
                           <div class="card-body">
                               {% for admission in closed_admission_physiosession_admin %}
-                              <div class="section-title mt-0">{{ admission.admission_no }}</div>
+                              <div class="section-title mt-0">{{ admission.admission_no_closed }}</div>
                               <table class="table table-bordered">
                                   <thead>
                                       <tr>

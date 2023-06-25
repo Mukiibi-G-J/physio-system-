@@ -128,6 +128,7 @@ class PhysioSession(models.Model):
     more_notes = models.TextField()
     therapist = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
     created_at = models.DateField(auto_now_add=True)
+    quantity_of_session_left = models.CharField(max_length=25)
 
     def save(self, patient_no=None, *args, **kwargs):
         if not self.pk:
@@ -136,31 +137,21 @@ class PhysioSession(models.Model):
                 .order_by("-id")
                 .first()
             )
-            if last_admission.quantity_of_sessions > 0:
-                new_quantity_0f_session = int(last_admission.quantity_of_sessions) - 1
 
-                last_admission.quantity_of_sessions = new_quantity_0f_session
-                last_admission.save()
-                last_physioSession = (
-                    PhysioSession.objects.filter(admission_no=last_admission)
-                    .order_by("-id")
-                    .first()
-                )
+            last_physioSession = (
+                PhysioSession.objects.filter(admission_no=last_admission)
+                .order_by("-id")
+                .first()
+            )
 
-                if last_physioSession:
-                    last_id = int(
-                        last_physioSession.physiosession_no.split("-")[-1][2:]
-                    )
-                    self.physiosession_no = (
-                        f"{patient_no}-PH{str(last_id + 1).zfill(4)}"
-                    )
-                    self.admission_no = last_admission
-                    print(self.admission_no)
-                else:
-                    self.physiosession_no = f"{patient_no}-PH0001"
-                    self.admission_no = last_admission
+            if last_physioSession:
+                last_id = int(last_physioSession.physiosession_no.split("-")[-1][2:])
+                self.physiosession_no = f"{patient_no}-PH{str(last_id + 1).zfill(4)}"
+                self.admission_no = last_admission
+                print(self.admission_no)
             else:
-                messages.error("No more sessions available for the admission.")
+                self.physiosession_no = f"{patient_no}-PH0001"
+                self.admission_no = last_admission
 
         super().save(*args, **kwargs)
 
